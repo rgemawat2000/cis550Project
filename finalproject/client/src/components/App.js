@@ -11,7 +11,6 @@ import Login from './Login';
 import Landing from './Landing';
 import SignUp from './SignUp';
 
-
 export default class App extends React.Component {
 
 	render() {
@@ -23,7 +22,7 @@ export default class App extends React.Component {
 							exact
 							path="/"
 							render={() => (
-								<Dashboard />
+								<Landing />
 							)}
 						/>
 						<Route

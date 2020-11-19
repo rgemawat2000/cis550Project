@@ -10,16 +10,11 @@ export default class SignUp extends React.Component {
         this.state = {
 
         }
-
     }
 
     // React function that is called when the page load.
     componentDidMount() {
-
     }
-
-
-
 
     render() {
         return (
