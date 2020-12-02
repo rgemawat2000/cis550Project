@@ -48,19 +48,16 @@ function getCategoriesByCity(req, res) {
 /* ---- (Best Genres) ---- */
 function getDecades(req, res) {
   var query = `
-    SELECT DISTINCT (FLOOR(year/10)*10) AS decade
-    FROM (
-      SELECT DISTINCT release_year as year
-      FROM Movies
-      ORDER BY release_year
-    ) y
-  `;
-  connection.query(query, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
-  });
+  SELECT DISTINCT City
+  FROM Businesses
+  ORDER BY City
+`;
+connection.query(query, function (err, rows, fields) {
+  if (err) console.log(err);
+  else {
+    res.json(rows);
+  }
+});
 }
 
 async function addNewUser(req, res) {
@@ -161,5 +158,6 @@ module.exports = {
   addNewUser: addNewUser,
   validateLogin: validateLogin,
   logout: logout,
-  getCategoriesByCity: getCategoriesByCity
+  getCategoriesByCity: getCategoriesByCity,
+  getDecades: getDecades
 }
