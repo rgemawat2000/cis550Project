@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Login from './Login';
 import SignUp from "./SignUp";
+import Facts from './Facts';
 
 function Landing() {
   return (<Router>
@@ -20,6 +21,9 @@ function Landing() {
               <li className="nav-item">
                 <Link className="nav-link" to={"/sign-up"}>Sign up</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to={"/facts"}>Facts</Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -32,6 +36,7 @@ function Landing() {
             <Route exact path='/landing' component={Login} />
             <Route path="/login" component={Login} />
             <Route path="/sign-up" component={SignUp} />
+            <Route path="/facts" component={Facts} />
           </Switch>
         </div>
       </div>

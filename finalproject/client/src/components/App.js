@@ -10,6 +10,7 @@ import BestGenres from './BestGenres';
 import Login from './Login';
 import Landing from './Landing';
 import SignUp from './SignUp';
+import Facts from './Facts';
 
 export default class App extends React.Component {
 
@@ -54,6 +55,13 @@ export default class App extends React.Component {
 							path="/sign-up"
 							render={() => (
 								<SignUp />
+							)}
+						/>
+
+						<Route
+							path="/facts"
+							render={() => (
+								<Facts/>
 							)}
 						/>
 						<Route

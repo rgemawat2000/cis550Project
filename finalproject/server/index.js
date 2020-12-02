@@ -22,7 +22,7 @@ app.post('/validateLogin', routes.validateLogin);
 
 app.post('/register', routes.addNewUser);
 
-app.get('/topCategories/:city', routes.getCategoriesByCity);
+//app.get('/topCategories/:city', routes.getCategoriesByCity);
 app.get('/decades', routes.getDecades);
 
 
