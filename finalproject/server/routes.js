@@ -24,6 +24,27 @@ function testGetCategories(req, res) {
   });
 }
 
+function getCategoriesByCity(req, res) {
+  var inputCity = req.params.city;
+  console.log(inputCity);
+  var query = `
+  SELECT Category, COUNT(*) as Count
+  FROM Categories JOIN ReviewNoText1 ON Categories.BusinessID = ReviewNoText1.BusinessID
+  JOIN Businesses ON Businesses.ID = Categories.BusinessID
+  WHERE City = '${inputCity}'
+  GROUP BY Category
+  ORDER BY COUNT(*) DESC
+  LIMIT 10;`
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+}
+
+
 /* ---- (Best Genres) ---- */
 function getDecades(req, res) {
   var query = `
@@ -132,10 +153,13 @@ async function validateLogin(req, res) {
   });
 }
 
+
+
 // The exported functions, which can be accessed in index.js.
 module.exports = {
   testGetCategories: testGetCategories,
   addNewUser: addNewUser,
   validateLogin: validateLogin,
   logout: logout,
+  getCategoriesByCity: getCategoriesByCity
 }
