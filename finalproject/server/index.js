@@ -22,6 +22,7 @@ app.post('/validateLogin', routes.validateLogin);
 
 app.post('/register', routes.addNewUser);
 
+app.get('/decades', routes.getDecades);
 
 
 app.listen(8081, () => {
