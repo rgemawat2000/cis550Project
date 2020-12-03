@@ -9,32 +9,32 @@ export default class Facts extends React.Component {
 		super(props);
 
 		this.state = {
-			selectedDecade: "",
-			decades: [],
-			genres: []
+			selectedCity: "",
+			cities: [],
+			categories: []
 		};
 
-		this.submitDecade = this.submitDecade.bind(this);
+		this.submitCity = this.submitCity.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 	}
 
-	/* ---- Q3a (Best Genres) ---- */
+	
 	componentDidMount() {
 		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/decades", {
+		fetch("http://localhost:8081/cities", {
 			method: 'GET' // The type of HTTP request.
 		  })
 			.then(res => res.json()) // Convert the response data to a JSON.
-			.then(decadesList => {
-			  if (!decadesList) return;
+			.then(citiesList => {
+			  if (!citiesList) return;
 			  // Map each genreObj in genreList to an HTML element:
 			  // A button which triggers the showMovies function for each genre.
-			  let decadesDivs = decadesList.map((decadeObj, i) =>
-			  	<option value={decadeObj.decade}> {decadeObj.decade} </option>
+			  let citiesDivs = citiesList.map((citiesObj, i) =>
+			  	<option value={citiesObj.City}> {citiesObj.City} </option>
 			  );
 	  
 			  this.setState({
-				decades: decadesDivs
+				cities: citiesDivs
 			  })
 			})
 			.catch(err => console.log(err))	// Print the error if there is one.
@@ -42,27 +42,28 @@ export default class Facts extends React.Component {
 
 	handleChange(e) {
 		this.setState({
-			selectedDecade: e.target.value
+			selectedCity: e.target.value
 		});
 	}
 
-	/* ---- Q3b (Best Genres) ---- */
-	submitDecade() {
+
+	submitCity() {
 		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/bestGenres/" + this.state.selectedDecade, {
+		fetch("http://localhost:8081/bestCategories/" + this.state.selectedCity, {
 			method: 'GET' // The type of HTTP request.
 		  })
 		    .then(res => res.json()) // Convert the response data to a JSON.
-			.then(bestGenresList => {
-			  if (!bestGenresList) return;
+			.then(bestCatList => {
+			  if (!bestCatList) return;
 			  // Map each genreObj in genreList to an HTML element:
 			  // A button which triggers the showMovies function for each genre.
-			  let bestGenresDivs = bestGenresList.map((bestGenresObj, i) =>
-			  	<BestGenreRow genre = {bestGenresObj.genre} avg_rating = {bestGenresObj.avg_rating} />
+			  let bestCatDivs = bestCatList.map((bestCatObj, i) =>
+			  <BestGenreRow genre = {bestCatObj.genre} avg_rating = {bestCatObj.avg_rating} />
+
 			  );
 
 			  this.setState({
-				genres: bestGenresDivs
+				categories: bestCatDivs
 			  })
 			})
 			.catch(err => console.log(err))	// Print the error if there is one.
@@ -71,7 +72,7 @@ export default class Facts extends React.Component {
 	render() {
 
 		return (
-			<div className="BestGenres">
+			<div className="Facts">
 
 				<div className="container bestgenres-container">
 			      <div className="jumbotron">
@@ -79,22 +80,22 @@ export default class Facts extends React.Component {
 
 			        <div className="years-container">
 			          <div className="dropdown-container">
-			            <select value={this.state.selectedDecade} onChange={this.handleChange} className="dropdown" id="decadesDropdown">
+			            <select value={this.state.selectedCity} onChange={this.handleChange} className="dropdown" id="decadesDropdown">
 			            	<option select value> -- select an option -- </option>
-			            	{this.state.decades}
+			            	{this.state.cities}
 			            </select>
-			            <button className="submit-btn" id="decadesSubmitBtn" onClick={this.submitDecade}>Submit</button>
+			            <button className="submit-btn" id="decadesSubmitBtn" onClick={this.submitCity}>Submit</button>
 			          </div>
 			        </div>
 			      </div>
 			      <div className="jumbotron">
 			        <div className="movies-container">
 			          <div className="movie">
-			            <div className="header"><strong>Genre</strong></div>
+			            <div className="header"><strong>Business Category</strong></div>
 			            <div className="header"><strong>Average Rating</strong></div>
 			          </div>
 			          <div className="movies-container" id="results">
-			            {this.state.genres}
+			            {this.state.categories}
 			          </div>
 			        </div>
 			      </div>

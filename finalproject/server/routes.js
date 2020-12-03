@@ -44,14 +44,40 @@ function getCategoriesByCity(req, res) {
   });
 }
 
-
-/* ---- (Best Genres) ---- */
-function getDecades(req, res) {
+function bestCategoriesPerCity(req, res) {
+  var city = req.params.selectedCity;
   var query = `
-  SELECT DISTINCT City
-  FROM Businesses
-  ORDER BY City
+  SELECT Category as genre, AVG(Stars) as avg_rating
+	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
+	WHERE Businesses.City = ${city}
+  GROUP BY genre
+  ORDER BY avg_rating DESC
+  LIMIT  10;
+
 `;
+
+connection.query(query, function (err, rows, fields) {
+  if (err) console.log(err);
+  else {
+    res.json(rows);
+  }
+});
+}
+
+
+function getCities(req, res) {
+  var query = `
+  WITH b AS (SELECT City, count(*) as num
+  FROM Businesses
+  GROUP BY City)
+  
+  SELECT DISTINCT City
+  FROM b
+  WHERE num > 100
+  ORDER BY City
+ 
+`;
+
 connection.query(query, function (err, rows, fields) {
   if (err) console.log(err);
   else {
@@ -159,5 +185,6 @@ module.exports = {
   validateLogin: validateLogin,
   logout: logout,
   getCategoriesByCity: getCategoriesByCity,
-  getDecades: getDecades
+  getCities: getCities,
+  bestCategoriesPerCity:bestCategoriesPerCity
 }

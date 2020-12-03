@@ -23,7 +23,9 @@ app.post('/validateLogin', routes.validateLogin);
 app.post('/register', routes.addNewUser);
 
 //app.get('/topCategories/:city', routes.getCategoriesByCity);
-app.get('/decades', routes.getDecades);
+app.get('/cities', routes.getCities);
+
+app.get('/bestCategories/:selectedCity', routes.bestCategoriesPerCity);
 
 
 app.listen(8081, () => {
