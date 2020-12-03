@@ -27,6 +27,7 @@ app.get('/cities', routes.getCities);
 
 app.get('/bestCategories/:selectedCity', routes.bestCategoriesPerCity);
 
+app.get('/recommendations/:postalCode', routes.getRecs);
 
 app.listen(8081, () => {
 	console.log(`Server listening on PORT 8081`);
