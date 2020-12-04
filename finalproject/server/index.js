@@ -8,13 +8,6 @@ app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-/* ---------------------------------------------------------------- */
-/* ------------------- Route handler registration ----------------- */
-/* ---------------------------------------------------------------- */
-
-/* ---- (Dashboard) ---- */
-// The route localhost:8081/genres is registered to the function
-// routes.getAllGenres, specified in routes.js.
 
 app.get('/first10Categories', routes.testGetCategories);
 
@@ -27,6 +20,15 @@ app.get('/cities', routes.getCities);
 
 app.get('/bestCategories/:selectedCity', routes.bestCategoriesPerCity);
 
+app.get('/preCovidRating/:selectedCity', routes.preCovidRating);
+
+app.get('/midCovidRating/:selectedCity', routes.midCovidRating);
+
+app.get('/percentOpen/:selectedCity', routes.percentOpen);
+
+app.get('/ToD/:selectedCity', routes.ToD);
+
+app.get('/GrubHub/:selectedCity', routes.GrubHub);
 
 app.listen(8081, () => {
 	console.log(`Server listening on PORT 8081`);

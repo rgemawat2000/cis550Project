@@ -12,6 +12,6 @@
   padding: 0 10px;
 }
 
-.movie .header, .movieResults .title, .movieResults .genre, .movieResults .votes, .movieResults .year, .movieResults .rating {
+.movie .header, .movieResults .title, .movieResults .genre, .movieResults .votes, .movieResults .year, .movieResults .rating, .movieResults .output {
   flex: 1 0 25%;
 }

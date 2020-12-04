@@ -49,7 +49,7 @@ function bestCategoriesPerCity(req, res) {
   var query = `
   SELECT Category as genre, AVG(Stars) as avg_rating
 	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
-	WHERE Businesses.City = ${city}
+	WHERE Businesses.City = '${city}'
   GROUP BY genre
   ORDER BY avg_rating DESC
   LIMIT  10;
@@ -64,6 +64,96 @@ connection.query(query, function (err, rows, fields) {
 });
 }
 
+function preCovidRating(req, res) {
+  var city = req.params.selectedCity;
+  var query = `
+  SELECT AVG(Stars) as output
+	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
+	WHERE Businesses.City = '${city}'
+  LIMIT  1;
+
+`;
+
+connection.query(query, function (err, rows, fields) {
+  if (err) console.log(err);
+  else {
+    res.json(rows);
+  }
+});
+}
+
+function midCovidRating(req, res) {
+  var city = req.params.selectedCity;
+  var query = `
+  SELECT AVG(Stars) as output
+	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
+	WHERE Businesses.City = '${city}'
+  LIMIT  1;
+
+`;
+
+connection.query(query, function (err, rows, fields) {
+  if (err) console.log(err);
+  else {
+    res.json(rows);
+  }
+});
+}
+
+
+function percentOpen(req, res) {
+  var city = req.params.selectedCity;
+  var query = `
+  WITH a as (
+    SELECT COUNT(*) as total
+    FROM CovidData JOIN Businesses ON Businesses.ID = CovidData. BusinessID
+    WHERE Businesses.City = '${city}'
+    )
+    SELECT COUNT(*) / AVG(a.total) as output
+    FROM CovidData JOIN Businesses ON Businesses.ID = CovidData. BusinessID JOIN a 
+    WHERE Businesses.City = '${city}' AND ClosedUntil = 0;
+`;
+
+connection.query(query, function (err, rows, fields) {
+  if (err) console.log(err);
+  else {
+    res.json(rows);
+  }
+});
+}
+
+function ToD(req, res) {
+  var city = req.params.selectedCity;
+  var query = `
+  SELECT COUNT(*) as output
+  FROM CovidData JOIN Businesses ON Businesses.ID = CovidData.BusinessID
+  WHERE CovidData.DelOrTo = 'TRUE' AND Businesses.City = '${city}';
+`;
+
+connection.query(query, function (err, rows, fields) {
+  if (err) console.log(err);
+  else {
+    res.json(rows);
+  }
+});
+}
+
+function GrubHub(req, res) {
+  var city = req.params.selectedCity;
+  var query = `
+  SELECT COUNT(*) as output
+  FROM CovidData JOIN Businesses ON Businesses.ID = CovidData.BusinessID
+  WHERE Grubhub = 'TRUE' AND Businesses.City = '${city}'
+  ;
+`;
+
+connection.query(query, function (err, rows, fields) {
+  if (err) console.log(err);
+  else {
+    res.json(rows);
+  }
+});
+}
 
 function getCities(req, res) {
   var query = `
@@ -186,5 +276,10 @@ module.exports = {
   logout: logout,
   getCategoriesByCity: getCategoriesByCity,
   getCities: getCities,
-  bestCategoriesPerCity:bestCategoriesPerCity
+  bestCategoriesPerCity: bestCategoriesPerCity,
+  preCovidRating: preCovidRating,
+  midCovidRating: midCovidRating,
+  percentOpen: percentOpen,
+  ToD: ToD,
+  GrubHub: GrubHub
 }
