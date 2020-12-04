@@ -4,6 +4,8 @@ import SingleOutputRow from './SingleOutputRow';
 import '../style/BestGenres.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../style/Facts.css';
+import PageNavbar from './PageNavbar';
+
 
 export default class Facts extends React.Component {
 	constructor(props) {
@@ -180,6 +182,8 @@ export default class Facts extends React.Component {
 
 		return (
 			<div>
+				<PageNavbar active="facts" />
+
 				<div id="page-wrapper" class="container">
 					<div class="row">
 						<div class="col-lg-12">

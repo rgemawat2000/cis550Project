@@ -42,3 +42,7 @@ body {
 .row {
     padding-bottom: 10px;
 }
+
+.container {
+    margin-top: 10px;
+}

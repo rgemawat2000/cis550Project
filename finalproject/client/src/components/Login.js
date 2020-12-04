@@ -56,6 +56,7 @@ export default class Login extends React.Component {
                 // console.log("res json status " + msg);
                 if (msg === 200) {
                     console.log("SUCCESSS")
+                    window.location.assign('/facts');
                     //redirect from here; 
                 } else if (msg === 206) {
                     // console.log("Email does not exist")
@@ -141,7 +142,7 @@ export default class Login extends React.Component {
                         <span className='error'>{errors.password}</span>}
                 </div>
                 <div className='info'>
-                    <small>Password must be at least six characters in length.</small>
+                    <small>Note: Password must be at least six characters in length.</small>
                 </div>
                 {/* <button type="submit" onClick={e => { e.preventDefault(); this.submitLogin() }} className="btn btn-info btn-block">Submit</button> */}
                 <button type="submit" className="btn btn-info btn-block">Submit</button>
