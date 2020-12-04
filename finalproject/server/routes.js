@@ -266,6 +266,23 @@ async function validateLogin(req, res) {
   });
 }
 
+function getRecs(req, res) {
+  var inputPC = req.params.postalCode;
+  console.log(inputPC)
+  var query = `SELECT DISTINCT Name AS name, Address AS address, AVG(ReviewsNoText.Stars) AS rating, "Yes" AS abv_avg
+  FROM Businesses 
+  JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
+  WHERE PostalCode = '${inputPC}'
+  GROUP BY ReviewsNoText.BusinessID
+  `;
+  connection.query(query, function(err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log(rows);
+      res.json(rows);
+    }
+  });
+};
 
 
 // The exported functions, which can be accessed in index.js.
@@ -281,5 +298,7 @@ module.exports = {
   midCovidRating: midCovidRating,
   percentOpen: percentOpen,
   ToD: ToD,
-  GrubHub: GrubHub
+  GrubHub: GrubHub,
+  getRecs: getRecs
+
 }

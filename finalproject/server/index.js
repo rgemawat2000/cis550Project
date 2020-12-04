@@ -30,6 +30,9 @@ app.get('/ToD/:selectedCity', routes.ToD);
 
 app.get('/GrubHub/:selectedCity', routes.GrubHub);
 
+app.get('/recommendations/:postalCode', routes.getRecs);
+
+
 app.listen(8081, () => {
 	console.log(`Server listening on PORT 8081`);
 });

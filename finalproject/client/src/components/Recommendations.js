@@ -11,24 +11,40 @@ export default class Recommendations extends React.Component {
 		// State maintained by this React component is the selected movie name,
 		// and the list of recommended movies.
 		this.state = {
-			movieName: "",
-			recMovies: []
+			postalCode: "",
+			recValues: []
 		}
 
-		this.handleMovieNameChange = this.handleMovieNameChange.bind(this);
-		this.submitMovie = this.submitMovie.bind(this);
+		this.handlePostalChange = this.handlePostalChange.bind(this);
+		this.submitInput = this.submitInput.bind(this);
 	}
 
-	handleMovieNameChange(e) {
+	handlePostalChange(e) {
 		this.setState({
-			movieName: e.target.value
+			postalCode: e.target.value
 		});
 	}
 
-	/* ---- Q2 (Recommendations) ---- */
-	// Hint: Name of movie submitted is contained in `this.state.movieName`.
-	submitMovie() {
-		
+	submitInput() {
+		fetch(`http://localhost:8081/recommendations/${this.state.postalCode}`, {
+      		method: 'GET' // The type of HTTP request.
+    	})
+    	.then(res => res.json())
+    	.then(recValuesList => {
+      		let recValuesDivs = recValuesList.map((value, i) => 
+        		<div key={i} className="recResults">
+					<div className="name">{value.name}</div>
+					<div className="address">{value.address}</div>
+					<div className="rating">{value.rating}</div>
+					<div className="abvavg">{value.abv_avg}</div>
+        		</div>
+      	);
+      		//This saves our HTML representation of the data into the state, which we can call in our render function
+      		this.setState({
+        		recValues: recValuesDivs
+      		});
+    	})
+    	.catch(err => console.log(err))	
 	}
 
 	
@@ -43,20 +59,20 @@ export default class Recommendations extends React.Component {
 			    		<div className="h5">Recommendations</div>
 			    		<br></br>
 			    		<div className="input-container">
-			    			<input type='text' placeholder="Enter Movie Name" value={this.state.movieName} onChange={this.handleMovieNameChange} id="movieName" className="movie-input"/>
-			    			<button id="submitMovieBtn" className="submit-btn" onClick={this.submitMovie}>Submit</button>
+			    			<input type='text' placeholder="Enter Postal Code" value={this.state.postalCode} onChange={this.handlePostalChange} id="postalCode" className="postal-input"/>
+			    			<button id="submitInputBtn" className="submit-btn" onClick={this.submitInput}>Submit</button>
 			    		</div>
 			    		<div className="header-container">
-			    			<div className="h6">You may like ...</div>
+			    			<div className="h6">We Recommend ...</div>
 			    			<div className="headers">
-			    				<div className="header"><strong>Title</strong></div>
-			    				<div className="header"><strong>Movie ID</strong></div>
+			    				<div className="header"><strong>Name</strong></div>
+			    				<div className="header"><strong>Address</strong></div>
 					            <div className="header"><strong>Rating</strong></div>
-					            <div className="header"><strong>Vote Count</strong></div>
+					            <div className="header"><strong>Above Average</strong></div>
 			    			</div>
 			    		</div>
 			    		<div className="results-container" id="results">
-			    			{this.state.recMovies}
+			    			{this.state.recValues}
 			    		</div>
 			    	</div>
 			    </div>
