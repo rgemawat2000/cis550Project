@@ -163,7 +163,7 @@ function getCities(req, res) {
   
   SELECT DISTINCT City
   FROM b
-  WHERE num > 100
+  WHERE num > 500
   ORDER BY City
  
 `;

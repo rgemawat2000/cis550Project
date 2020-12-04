@@ -1,0 +1,44 @@
+body {
+    margin-top: 20px;
+    background: #eee;
+}
+#page-wrapper {
+    padding: 15px 25px;
+}
+
+.select2-container .select2-selection--single {
+    height: 34px !important;
+}
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ccc !important;
+    border-radius: 0px !important;
+}
+
+.container {
+    background: white;
+}
+
+.movies-container {
+    display: flex;
+    flex-flow: column wrap;
+    margin-top: 10px;
+}
+
+.movies-container .movie,
+.movies-container .movieResults {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 40px;
+    padding: 0 10px;
+}
+
+.movies-header .header,
+.movie .rating,
+.movie .votes {
+    flex: 1 0 25%;
+}
+
+.row {
+    padding-bottom: 10px;
+}
