@@ -13,6 +13,7 @@ export default class RecommendationsRow extends React.Component {
 				<div className="address">ADDRESS</div>
 				<div className="rating">RATING</div>
 				<div className="abvavg">ABOVE_AVERAGE</div>
+				<div className="open">OPEN</div>
 			</div>
 		);
 	}

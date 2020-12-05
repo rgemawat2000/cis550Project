@@ -30,7 +30,11 @@ app.get('/ToD/:selectedCity', routes.ToD);
 
 app.get('/GrubHub/:selectedCity', routes.GrubHub);
 
-app.get('/recommendations/:postalCode', routes.getRecs);
+app.get('/categories', routes.getCategories);
+
+app.get('/areaaverage/:postalCode', routes.getAreaAverage);
+
+app.get('/recommendations/:postalCode/:category/:minRating/:delivery/:service', routes.getRecs);
 
 
 app.listen(8081, () => {

@@ -268,12 +268,35 @@ async function validateLogin(req, res) {
 
 function getRecs(req, res) {
   var inputPC = req.params.postalCode;
-  console.log(inputPC)
-  var query = `SELECT DISTINCT Name AS name, Address AS address, AVG(ReviewsNoText.Stars) AS rating, "Yes" AS abv_avg
+  var inputCategory = req.params.category;
+  var inputRating = req.params.minRating;
+  var inputDelivery = req.params.delivery;
+  var inputService = req.params.service;
+  var delivery = "FALSE"
+  var service = "FALSE"
+  if (inputDelivery == "Yes") {
+    delivery = "TRUE"
+  }
+  if (inputService == "Yes") {
+    service = "TRUE"
+  }
+
+  var query = `
+  WITH Avg_Rating AS (SELECT Businesses.PostalCode, AVG(Stars) as Avg_Area_Rating
+  FROM Businesses
+  GROUP BY Businesses.PostalCode)
+  SELECT DISTINCT Name AS name, Address AS address, Businesses.Stars AS rating,
+  CASE
+    WHEN Businesses.Stars >= Avg_Area_Rating THEN "Yes"
+	  ELSE "No"
+  END AS abv_avg, IsOpen AS open
   FROM Businesses 
-  JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
-  WHERE PostalCode = '${inputPC}'
-  GROUP BY ReviewsNoText.BusinessID
+  JOIN Categories ON Businesses.ID = Categories.BusinessID
+  JOIN Avg_Rating ON Businesses.PostalCode = Avg_Rating.PostalCode
+  JOIN CovidData ON Businesses.ID = CovidData.BusinessID
+  WHERE Businesses.PostalCode = ${inputPC} AND Category = '${inputCategory}' AND Businesses.Stars >= ${inputRating}
+  AND CovidData.DelOrTo = '${delivery}' AND CovidData.VirtualServices = '${service}'
+  ORDER BY Businesses.Stars DESC, Name 
   `;
   connection.query(query, function(err, rows, fields) {
     if (err) console.log(err);
@@ -284,6 +307,35 @@ function getRecs(req, res) {
   });
 };
 
+function getCategories(req, res) {
+  var query = `SELECT DISTINCT Category AS category
+  FROM Categories
+  ORDER BY Category
+  `;
+  connection.query(query, function(err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      //console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function getAreaAverage(req, res) {
+  var inputPC = req.params.postalCode;
+  var query = `SELECT AVG(Stars) as avg_area_rating
+  FROM Businesses
+  WHERE Businesses.PostalCode = ${inputPC}
+  GROUP BY Businesses.PostalCode
+  `;
+  connection.query(query, function(err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      //console.log(rows);
+      res.json(rows);
+    }
+  });
+};
 
 // The exported functions, which can be accessed in index.js.
 module.exports = {
@@ -299,6 +351,7 @@ module.exports = {
   percentOpen: percentOpen,
   ToD: ToD,
   GrubHub: GrubHub,
-  getRecs: getRecs
-
+  getRecs: getRecs,
+  getCategories: getCategories,
+  getAreaAverage: getAreaAverage
 }
