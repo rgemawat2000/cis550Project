@@ -70,6 +70,12 @@ export default class App extends React.Component {
 								<Landing />
 							)}
 						/>
+						<Route
+							path="/sign-out"
+							render={() => (
+								<Landing />
+							)}
+						/>
 					</Switch>
 				</Router>
 			</div>

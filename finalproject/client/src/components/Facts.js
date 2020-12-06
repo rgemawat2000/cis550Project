@@ -195,10 +195,9 @@ export default class Facts extends React.Component {
 					<div class="row">
 						<div className="col-sm-3">
 							<select class="form-control select2" value={this.state.selectedCity} onChange={this.handleChange} id="decadesDropdown">
-								<option> -- select an option -- </option>
+								<option> -- Select a City -- </option>
 								{this.state.cities}
 							</select>
-
 						</div>
 						<div class="col-sm-6">
 							<button className="btn btn-danger" id="decadesSubmitBtn" onClick={this.submitCity}>Submit</button>
