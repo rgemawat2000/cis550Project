@@ -147,8 +147,8 @@ export default class Recommendations extends React.Component {
 				<div id="page-wrapper" class="container">
 					<div class="row">
 						<div class="col-lg-12">
-							<h1>Reccomendations</h1>
-							<div class="alert alert-info"> Select options to get reccomendations  </div>
+							<h1>Recommendations</h1>
+							<div class="alert alert-info"> Select options to get recommendations </div>
 						</div>
 					</div>
 
