@@ -43,8 +43,8 @@ export default class Bookmark extends React.Component {
 					console.log('Session Email: ' + user[0].email);
 					console.log('Session username: ' + user[0].username);
 					this.setState({
-						sessionEmail: user.email,
-						sessionUsername: user.username
+						sessionEmail: user[0].email,
+						sessionUsername: user[0].username
 					})
 				}
 			})
@@ -64,9 +64,6 @@ export default class Bookmark extends React.Component {
 							<h1>{this.state.sessionUsername}'s Bookmarked Restaurants</h1>
 						</div>
 					</div>
-
-
-
 
 					<div class="row">
 						<div class="col-lg-4">
