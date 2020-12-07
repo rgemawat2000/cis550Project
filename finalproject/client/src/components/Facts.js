@@ -35,8 +35,6 @@ export default class Facts extends React.Component {
 			.then(res => res.json()) // Convert the response data to a JSON.
 			.then(citiesList => {
 				if (!citiesList) return;
-				// Map each genreObj in genreList to an HTML element:
-				// A button which triggers the showMovies function for each genre.
 				let citiesDivs = citiesList.map((citiesObj, i) =>
 					<option key={i} value={citiesObj.City}> {citiesObj.City} </option>
 				);

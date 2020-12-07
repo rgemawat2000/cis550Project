@@ -29,7 +29,8 @@ function getCategoriesByCity(req, res) {
   console.log(inputCity);
   var query = `
   SELECT Category, COUNT(*) as Count
-  FROM Categories JOIN ReviewNoText1 ON Categories.BusinessID = ReviewNoText1.BusinessID
+  FROM Categories 
+  JOIN ReviewNoText ON Categories.BusinessID = ReviewNoText.BusinessID
   JOIN Businesses ON Businesses.ID = Categories.BusinessID
   WHERE City = '${inputCity}'
   GROUP BY Category
@@ -56,12 +57,12 @@ function bestCategoriesPerCity(req, res) {
 
 `;
 
-connection.query(query, function (err, rows, fields) {
-  if (err) console.log(err);
-  else {
-    res.json(rows);
-  }
-});
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
 }
 
 function preCovidRating(req, res) {
@@ -71,15 +72,14 @@ function preCovidRating(req, res) {
 	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
 	WHERE Businesses.City = '${city}'
   LIMIT  1;
-
 `;
 
-connection.query(query, function (err, rows, fields) {
-  if (err) console.log(err);
-  else {
-    res.json(rows);
-  }
-});
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
 }
 
 function midCovidRating(req, res) {
@@ -89,37 +89,38 @@ function midCovidRating(req, res) {
 	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
 	WHERE Businesses.City = '${city}'
   LIMIT  1;
-
 `;
 
-connection.query(query, function (err, rows, fields) {
-  if (err) console.log(err);
-  else {
-    res.json(rows);
-  }
-});
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
 }
 
 
 function percentOpen(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  WITH a as (
+  WITH a AS (
     SELECT COUNT(*) as total
-    FROM CovidData JOIN Businesses ON Businesses.ID = CovidData. BusinessID
+    FROM CovidData 
+    JOIN Businesses ON Businesses.ID = CovidData. BusinessID
     WHERE Businesses.City = '${city}'
     )
     SELECT COUNT(*) / AVG(a.total) as output
-    FROM CovidData JOIN Businesses ON Businesses.ID = CovidData. BusinessID JOIN a 
+    FROM CovidData 
+    JOIN Businesses ON Businesses.ID = CovidData. BusinessID JOIN a 
     WHERE Businesses.City = '${city}' AND ClosedUntil = 0;
 `;
 
-connection.query(query, function (err, rows, fields) {
-  if (err) console.log(err);
-  else {
-    res.json(rows);
-  }
-});
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
 }
 
 function ToD(req, res) {
@@ -130,12 +131,12 @@ function ToD(req, res) {
   WHERE CovidData.DelOrTo = 'TRUE' AND Businesses.City = '${city}';
 `;
 
-connection.query(query, function (err, rows, fields) {
-  if (err) console.log(err);
-  else {
-    res.json(rows);
-  }
-});
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
 }
 
 function GrubHub(req, res) {
@@ -147,12 +148,12 @@ function GrubHub(req, res) {
   ;
 `;
 
-connection.query(query, function (err, rows, fields) {
-  if (err) console.log(err);
-  else {
-    res.json(rows);
-  }
-});
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
 }
 
 function getCities(req, res) {
@@ -165,15 +166,14 @@ function getCities(req, res) {
   FROM b
   WHERE num > 500
   ORDER BY City
- 
 `;
 
-connection.query(query, function (err, rows, fields) {
-  if (err) console.log(err);
-  else {
-    res.json(rows);
-  }
-});
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
 }
 
 async function addNewUser(req, res) {
@@ -181,13 +181,16 @@ async function addNewUser(req, res) {
   const password = req.body.password;
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
   var user = {
-    "email": req.body.email,
+    "email": req.body.email.toLowerCase(),
     "password": encryptedPassword,
     "username": req.body.username
   }
   console.log(user);
 
-  var query = `SELECT * FROM USERS WHERE email = '${user.email}' OR username = '${user.username}';`
+  var query = `
+  SELECT * 
+  FROM USERS 
+  WHERE email = '${user.email.toLowerCase()}' OR username = '${user.username}';`
   connection.query(query, async function (error, results, fields) {
     if (error) {
       console.log("error in register ");
@@ -231,6 +234,7 @@ function logout(req, res) {
 
 async function validateLogin(req, res) {
   var email = req.body.email;
+  email = email.toLowerCase();
   var password = req.body.password;
   var query = `SELECT * FROM USERS WHERE email = '${email}';`
   connection.query(query, async function (error, results, fields) {
@@ -244,9 +248,10 @@ async function validateLogin(req, res) {
       if (results.length > 0) {
         const comparision = await bcrypt.compare(req.body.password, results[0].password)
         if (comparision) {
+          req.session.email = email;
           res.send({
             "status": 200,
-            "success": "login sucessfull"
+            "success": "login successful"
           })
         }
         else {
@@ -298,7 +303,7 @@ function getRecs(req, res) {
   AND CovidData.DelOrTo = '${delivery}' AND CovidData.VirtualServices = '${service}'
   ORDER BY Businesses.Stars DESC, Name 
   `;
-  connection.query(query, function(err, rows, fields) {
+  connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
       console.log(rows);
@@ -312,7 +317,7 @@ function getCategories(req, res) {
   FROM Categories
   ORDER BY Category
   `;
-  connection.query(query, function(err, rows, fields) {
+  connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
       //console.log(rows);
@@ -323,11 +328,12 @@ function getCategories(req, res) {
 
 function bookmarks(req, res) {
   var user = req.params.userEmail;
-  var query = `SELECT Businesses.Name as name, Businesses.Address as address, Businesses.City as city, Businesses.State as state, Businesses.Stars as stars,
+  var query = `SELECT Businesses.Name as name, Businesses.Address as address,
+  Businesses.City as city, Businesses.State as state, Businesses.Stars as stars,
   FROM Businesses JOIN Bookmarks ON Bookmarks.BusinessID = Businesses.ID
   WHERE Bookmarks.User = ${user}
   `;
-  connection.query(query, function(err, rows, fields) {
+  connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
       //console.log(rows);
@@ -336,6 +342,27 @@ function bookmarks(req, res) {
   });
 };
 
+function addBookmark(req, res) {
+  var email = req.body.userEmail;
+  var businessID = req.body.businessName;
+
+  var query = `INSERT INTO Bookmarks(User, BusinessID) 
+        VALUES ('${email}', '${businessID}');`
+  connection.query(query, function (error, rows, fields) {
+    if (error) {
+      res.send({
+        "status": 400,
+        "failed": "error ocurred"
+      })
+    } else {
+      res.send({
+        "status": 200,
+        "success": "bookmark added sucessfully"
+      });
+    }
+  });
+}
+
 function getAreaAverage(req, res) {
   var inputPC = req.params.postalCode;
   var query = `SELECT AVG(Stars) as avg_area_rating
@@ -343,7 +370,7 @@ function getAreaAverage(req, res) {
   WHERE Businesses.PostalCode = ${inputPC}
   GROUP BY Businesses.PostalCode
   `;
-  connection.query(query, function(err, rows, fields) {
+  connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
       //console.log(rows);
@@ -353,12 +380,13 @@ function getAreaAverage(req, res) {
 };
 
 function covidBanner(req, res) {
-  var query = `SELECT CovidBanner AS output
+  var query = `
+  SELECT CovidBanner AS output
   FROM CovidData 
   WHERE CovidBanner <> "FALSE" 
-  ORDER BY RAND() LIMIT 1;
+  ORDER BY RAND() LIMIT 5;
   `;
-  connection.query(query, function(err, rows, fields) {
+  connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
       //console.log(rows);
@@ -367,13 +395,36 @@ function covidBanner(req, res) {
   });
 };
 
+function getSessionUser(req, res) {
+  console.log("Session Email: " + req.session.email);
+  var query = `SELECT email, username 
+  FROM USERS 
+  WHERE email = '${req.session.email}'
+  `
+  connection.query(query, function (error, rows, fields) {
+    if (error) {
+      res.send({
+        "status": 400,
+        "failed": "error ocurred"
+      })
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
+function logout(req, res) {
+  req.session.email = '';
+  res.redirect('http://localhost:3000/');
+};
+
 function covidBannerCity(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT CovidBanner AS output
+  SELECT CovidBanner AS output, name as BusinessName
   FROM CovidData cd JOIN Businesses b ON cd.BusinessID = b.ID
   WHERE cd.CovidBanner <> "FALSE" AND b.City = '${city}'
-  ORDER BY RAND() LIMIT 1;
+  ORDER BY RAND() LIMIT 5;
 `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -402,5 +453,8 @@ module.exports = {
   getAreaAverage: getAreaAverage,
   covidBanner: covidBanner,
   covidBannerCity: covidBannerCity,
-  bookmarks: bookmarks
+  bookmarks: bookmarks,
+  logout: logout,
+  getSessionUser: getSessionUser,
+  addBookmark: addBookmark
 }

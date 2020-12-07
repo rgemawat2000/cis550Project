@@ -15,36 +15,36 @@ export default class Bookmark extends React.Component {
 			bookmarks: [],
 		};
 		this.handleChange = this.handleChange.bind(this);
+		this.getSessionUser = this.getSessionUser.bind(this);
 	}
 
-
 	componentDidMount() {
+		this.getSessionUser();
 		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/bookmarks" + this.state.userEmail, {
-			method: 'GET' // The type of HTTP request.
-		})
-			.then(res => res.json()) // Convert the response data to a JSON.
-			.then(bookmarksList => {
-				if (!bookmarksList) return;
-				// Map each genreObj in genreList to an HTML element:
-				// A button which triggers the showMovies function for each genre.
-				let bookmarksDivs = bookmarksList.map((bookmarksObj, i) =>
-					<BookmarkRow name={bookmarksObj.name} address={bookmarksObj.address} city={bookmarksObj.city} state={bookmarksObj.state} stars={bookmarksObj.stars}/>
-
-				);
-
-				this.setState({
-					bookmarks: bookmarksDivs
-				})
-			})
-			.catch(err => console.log(err))	// Print the error if there is one.
-
 	}
 
 	handleChange(e) {
 		this.setState({
 			userEmail: e.target.value
 		});
+	}
+
+	getSessionUser() {
+		fetch("http://localhost:8081/getSessionUser", {
+			method: 'GET',
+			credentials: 'include'
+		})
+			.then(res => res.json())
+			.then(user => {
+				console.log(user);
+				console.log('Session Email: ' + user[0].email);
+				console.log('Session username: ' + user[0].username);
+				this.setState({
+					sessionEmail: user.email,
+					sessionUsername: user.username
+				})
+			})
+			.catch(err => console.log(err))
 	}
 
 
@@ -76,9 +76,9 @@ export default class Bookmark extends React.Component {
 							</div>
 						</div>
 
-					
-						
-						
+
+
+
 					</div>
 				</div>
 

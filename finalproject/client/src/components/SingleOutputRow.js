@@ -9,6 +9,7 @@ export default class SingleOutputRow extends React.Component {
 	render() {
 		return (
 			<div className="movieResults">
+				<div className="output">{this.props.BusinessName}</div>
 				<div className="output">{this.props.output}</div>
 			</div>
 		);

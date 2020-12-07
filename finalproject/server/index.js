@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
+var session = require('express-session');
 var routes = require("./routes.js");
 const cors = require('cors');
 
@@ -7,6 +8,15 @@ const app = express();
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+	session({
+		secret: "thisIsMySecret",
+		cookie: {
+			httpOnly: false,
+			maxAge: 24 * 60 * 60 * 1000
+		}
+	})
+);
 
 
 app.get('/first10Categories', routes.testGetCategories);
@@ -41,6 +51,12 @@ app.get('/recommendations/:postalCode/:category/:minRating/:delivery/:service', 
 app.get('/covidBanner', routes.covidBanner);
 
 app.get('/covidBanner/:selectedCity', routes.covidBannerCity);
+
+app.get('/signout', routes.logout);
+
+app.get('/getSessionUser', routes.getSessionUser);
+
+app.post('/addBookmark', routes.addBookmark);
 
 
 app.listen(8081, () => {

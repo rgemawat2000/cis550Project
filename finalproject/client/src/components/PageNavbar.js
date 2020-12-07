@@ -8,10 +8,12 @@ export default class PageNavbar extends React.Component {
 		this.state = {
 			navDivs: []
 		}
+
+		this.signout = this.signout.bind(this);
 	}
 
 	componentDidMount() {
-		const pageList = ['recommendations', 'facts', 'sign Out'];
+		const pageList = ['home', 'recommendations', 'facts', 'bookmark'];
 
 		let navbarDivs = pageList.map((page, i) => {
 			if (this.props.active === page) {
@@ -34,6 +36,18 @@ export default class PageNavbar extends React.Component {
 		});
 	}
 
+	signout() {
+		fetch("http://localhost:8081/logout", {
+			method: 'GET',
+			credentials: 'include'
+		})
+			.then(res => res.json())
+			.then(user => {
+				console.log(user);
+			})
+			.catch(err => console.log(err))
+	}
+
 	render() {
 		return (
 			<div className="PageNavbar">
@@ -42,6 +56,9 @@ export default class PageNavbar extends React.Component {
 					<div className="collapse navbar-collapse" id="navbarNavAltMarkup">
 						<div className="navbar-nav">
 							{this.state.navDivs}
+						</div>
+						<div>
+							<button className="btn btn-info" onClick={this.signout()} >Sign Out</button>
 						</div>
 					</div>
 				</nav>
