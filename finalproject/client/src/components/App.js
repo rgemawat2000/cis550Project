@@ -11,6 +11,7 @@ import Login from './Login';
 import Landing from './Landing';
 import SignUp from './SignUp';
 import Facts from './Facts';
+import Bookmark from './Bookmark';
 
 export default class App extends React.Component {
 
@@ -64,6 +65,13 @@ export default class App extends React.Component {
 								<Facts/>
 							)}
 						/>
+						<Route
+							path="/bookmark"
+							render={() => (
+								<Facts/>
+							)}
+						/>
+						
 						<Route
 							path="/landing"
 							render={() => (

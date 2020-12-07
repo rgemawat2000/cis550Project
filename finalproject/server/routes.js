@@ -321,6 +321,21 @@ function getCategories(req, res) {
   });
 };
 
+function bookmarks(req, res) {
+  var user = req.params.userEmail;
+  var query = `SELECT Businesses.Name as name, Businesses.Address as address, Businesses.City as city, Businesses.State as state, Businesses.Stars as stars,
+  FROM Businesses JOIN Bookmarks ON Bookmarks.BusinessID = Businesses.ID
+  WHERE Bookmarks.User = ${user}
+  `;
+  connection.query(query, function(err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      //console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
 function getAreaAverage(req, res) {
   var inputPC = req.params.postalCode;
   var query = `SELECT AVG(Stars) as avg_area_rating
@@ -353,5 +368,6 @@ module.exports = {
   GrubHub: GrubHub,
   getRecs: getRecs,
   getCategories: getCategories,
-  getAreaAverage: getAreaAverage
+  getAreaAverage: getAreaAverage,
+  bookmarks: bookmarks
 }
