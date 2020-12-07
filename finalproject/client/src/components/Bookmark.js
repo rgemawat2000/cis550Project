@@ -12,6 +12,8 @@ export default class Bookmark extends React.Component {
 
 		this.state = {
 			userEmail: "rgemawat@sas.upenn.edu",
+			sessionEmail: "",
+			sessionUsername: "",
 			bookmarks: [],
 		};
 		this.handleChange = this.handleChange.bind(this);
@@ -37,12 +39,14 @@ export default class Bookmark extends React.Component {
 			.then(res => res.json())
 			.then(user => {
 				console.log(user);
-				console.log('Session Email: ' + user[0].email);
-				console.log('Session username: ' + user[0].username);
-				this.setState({
-					sessionEmail: user.email,
-					sessionUsername: user.username
-				})
+				if (user.length > 0) {
+					console.log('Session Email: ' + user[0].email);
+					console.log('Session username: ' + user[0].username);
+					this.setState({
+						sessionEmail: user.email,
+						sessionUsername: user.username
+					})
+				}
 			})
 			.catch(err => console.log(err))
 	}
@@ -57,7 +61,7 @@ export default class Bookmark extends React.Component {
 				<div id="page-wrapper" class="container">
 					<div class="row">
 						<div class="col-lg-12">
-							<h1>Your Bookmarked Restaurants</h1>
+							<h1>{this.state.sessionUsername}'s Bookmarked Restaurants</h1>
 						</div>
 					</div>
 

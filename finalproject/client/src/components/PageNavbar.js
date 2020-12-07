@@ -40,11 +40,7 @@ export default class PageNavbar extends React.Component {
 		fetch("http://localhost:8081/logout", {
 			method: 'GET',
 			credentials: 'include'
-		})
-			.then(res => res.json())
-			.then(user => {
-				console.log(user);
-			})
+		}).then(window.location.assign("http://localhost:3000/"))
 			.catch(err => console.log(err))
 	}
 
@@ -58,7 +54,7 @@ export default class PageNavbar extends React.Component {
 							{this.state.navDivs}
 						</div>
 						<div>
-							<button className="btn btn-info" onClick={this.signout()} >Sign Out</button>
+							<button className="btn btn-info" onClick={this.signout} >Sign Out</button>
 						</div>
 					</div>
 				</nav>

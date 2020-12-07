@@ -5,6 +5,11 @@ var routes = require("./routes.js");
 const cors = require('cors');
 
 const app = express();
+app.use(function (req, res, next) {
+	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+	next();
+  });
+  
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -52,7 +57,7 @@ app.get('/covidBanner', routes.covidBanner);
 
 app.get('/covidBanner/:selectedCity', routes.covidBannerCity);
 
-app.get('/signout', routes.logout);
+app.get('/logout', routes.logout);
 
 app.get('/getSessionUser', routes.getSessionUser);
 

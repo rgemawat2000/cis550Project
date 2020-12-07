@@ -226,12 +226,6 @@ async function addNewUser(req, res) {
   });
 }
 
-function logout(req, res) {
-  req.session = null;
-  res.redirect('/');
-};
-
-
 async function validateLogin(req, res) {
   var email = req.body.email;
   email = email.toLowerCase();
@@ -414,8 +408,9 @@ function getSessionUser(req, res) {
 };
 
 function logout(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   req.session.email = '';
-  res.redirect('http://localhost:3000/');
+  // res.redirect('http://localhost:3000/');
 };
 
 function covidBannerCity(req, res) {
@@ -439,7 +434,6 @@ module.exports = {
   testGetCategories: testGetCategories,
   addNewUser: addNewUser,
   validateLogin: validateLogin,
-  logout: logout,
   getCategoriesByCity: getCategoriesByCity,
   getCities: getCities,
   bestCategoriesPerCity: bestCategoriesPerCity,
