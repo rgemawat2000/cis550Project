@@ -337,6 +337,37 @@ function getAreaAverage(req, res) {
   });
 };
 
+function covidBanner(req, res) {
+  var query = `SELECT CovidBanner AS output
+  FROM CovidData 
+  WHERE CovidBanner <> "FALSE" 
+  ORDER BY RAND() LIMIT 1;
+  `;
+  connection.query(query, function(err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      //console.log(rows);
+      res.json(rows);
+    }
+  });
+};
+
+function covidBannerCity(req, res) {
+  var city = req.params.selectedCity;
+  var query = `
+  SELECT CovidBanner AS output
+  FROM CovidData cd JOIN Businesses b ON cd.BusinessID = b.ID
+  WHERE cd.CovidBanner <> "FALSE" AND b.City = '${city}'
+  ORDER BY RAND() LIMIT 1;
+`;
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
+};
+
 // The exported functions, which can be accessed in index.js.
 module.exports = {
   testGetCategories: testGetCategories,
@@ -353,5 +384,7 @@ module.exports = {
   GrubHub: GrubHub,
   getRecs: getRecs,
   getCategories: getCategories,
-  getAreaAverage: getAreaAverage
+  getAreaAverage: getAreaAverage,
+  covidBanner: covidBanner,
+  covidBannerCity: covidBannerCity
 }

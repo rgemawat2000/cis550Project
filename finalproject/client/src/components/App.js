@@ -11,6 +11,7 @@ import Login from './Login';
 import Landing from './Landing';
 import SignUp from './SignUp';
 import Facts from './Facts';
+import Home from './Home';
 
 export default class App extends React.Component {
 
@@ -74,6 +75,12 @@ export default class App extends React.Component {
 							path="/sign-out"
 							render={() => (
 								<Landing />
+							)}
+						/>
+						<Route
+							path="/home"
+							render={() => (
+								<Home />
 							)}
 						/>
 					</Switch>

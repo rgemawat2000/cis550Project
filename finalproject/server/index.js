@@ -36,6 +36,10 @@ app.get('/areaaverage/:postalCode', routes.getAreaAverage);
 
 app.get('/recommendations/:postalCode/:category/:minRating/:delivery/:service', routes.getRecs);
 
+app.get('/covidBanner', routes.covidBanner);
+
+app.get('/covidBanner/:selectedCity', routes.covidBannerCity);
+
 
 app.listen(8081, () => {
 	console.log(`Server listening on PORT 8081`);
