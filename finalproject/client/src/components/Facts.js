@@ -257,12 +257,12 @@ export default class Facts extends React.Component {
 						<div class="col-lg-4">
 							<div class="card">
 								<div class="card-header">
-									Covid Impact on Average Ratings
+									Average Ratings
   								</div>
 								<div class="card-body">
 									<div className="movies-container">
 										<div className="movie">
-											<div className="header"><strong>Pre-COVID Average</strong></div>
+											<div className="header"><strong>Overall Average</strong></div>
 											{/* <div className="header"><strong>need to change -> just gives overall average</strong></div> */}
 										</div>
 										<div className="movies-container" id="results">
@@ -271,11 +271,11 @@ export default class Facts extends React.Component {
 									</div>
 									<div className="movies-container">
 										<div className="movie">
-											<div className="header"><strong>Mid-COVID Average</strong></div>
+											<div className="header"><strong>Recent Average (2019 to Present)</strong></div>
 											{/* <div className="header"><strong>need to change -> just gives overall average</strong></div> */}
 										</div>
 										<div className="movies-container" id="results">
-											{this.state.preCovidRating}
+											{this.state.midCovidRating}
 										</div>
 									</div>
 								</div>

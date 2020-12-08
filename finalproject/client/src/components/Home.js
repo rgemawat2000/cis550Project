@@ -126,7 +126,7 @@ export default class Home extends React.Component {
 					<div className="row">
 						<div className="col-lg-12">
 							<h1>Home</h1>
-							<div className="alert alert-info"> Select a city to get Covid offers by local Businesses </div>
+							<div className="alert alert-info"> Select a city to get Covid offers by local businesses </div>
 						</div>
 					</div>
 

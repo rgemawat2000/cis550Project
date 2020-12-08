@@ -49,6 +49,25 @@ export default class Bookmark extends React.Component {
 				}
 			})
 			.catch(err => console.log(err))
+
+			fetch("http://localhost:8081/bookmarks" + this.state.sessionEmail, {
+			method: 'GET',
+		})
+		.then(res => res.json()) // Convert the response data to a JSON.
+		.then(bookmarkList => {
+			if (!bookmarkList) return;
+			// Map each genreObj in genreList to an HTML element:
+			// A button which triggers the showMovies function for each genre.
+			let bookmarkDivs = bookmarkList.map((bookmarkObj, i) =>
+				<BookmarkRow name={bookmarkObj.name} address={bookmarkObj.address} city={bookmarkObj.city} state={bookmarkObj.state} stars={bookmarkObj.stars}/>
+
+			);
+
+			this.setState({
+				bookmarks: bookmarkDivs
+			})
+		})
+			.catch(err => console.log(err))
 	}
 
 
@@ -61,14 +80,16 @@ export default class Bookmark extends React.Component {
 				<div id="page-wrapper" class="container">
 					<div class="row">
 						<div class="col-lg-12">
-							<h1>{this.state.sessionUsername}'s Bookmarked Restaurants</h1>
+							<h1>{this.state.sessionUsername}'s Bookmarked Businesses</h1>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="col-lg-4">
 							<div class="card">
-
+							<div className="movie">
+											<div className="header"><strong>Name </strong><strong>Address </strong><strong>City </strong><strong>State </strong><strong>Stars </strong></div>
+										</div>
 								<div class="card-body">
 									<div className="movies-container" id="results">
 										{this.state.bookmarks}

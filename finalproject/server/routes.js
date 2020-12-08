@@ -68,10 +68,9 @@ function bestCategoriesPerCity(req, res) {
 function preCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT AVG(Stars) as output
-	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
-	WHERE Businesses.City = '${city}'
-  LIMIT  1;
+  SELECT AVG(ReviewsNoText.Stars) as output
+  FROM Businesses JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
+  WHERE Businesses.City = '${city}';
 `;
 
   connection.query(query, function (err, rows, fields) {
@@ -85,10 +84,9 @@ function preCovidRating(req, res) {
 function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT AVG(Stars) as output
-	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
-	WHERE Businesses.City = '${city}'
-  LIMIT  1;
+  SELECT AVG(ReviewsNoText.Stars) as output
+  FROM Businesses JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
+  WHERE ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') AND Businesses.City = '${city}';
 `;
 
   connection.query(query, function (err, rows, fields) {
@@ -284,7 +282,7 @@ function getRecs(req, res) {
   WITH Avg_Rating AS (SELECT Businesses.PostalCode, AVG(Stars) as Avg_Area_Rating
   FROM Businesses
   GROUP BY Businesses.PostalCode)
-  SELECT DISTINCT Name AS name, Address AS address, Businesses.Stars AS rating,
+  SELECT DISTINCT Name AS name, Address AS address, Businesses.Stars AS rating, 
   CASE
     WHEN Businesses.Stars >= Avg_Area_Rating THEN "Yes"
 	  ELSE "No"
@@ -325,7 +323,7 @@ function bookmarks(req, res) {
   var query = `SELECT Businesses.Name as name, Businesses.Address as address,
   Businesses.City as city, Businesses.State as state, Businesses.Stars as stars,
   FROM Businesses JOIN Bookmarks ON Bookmarks.BusinessID = Businesses.ID
-  WHERE Bookmarks.User = ${user}
+  WHERE Bookmarks.UserEmail = ${user}
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -340,7 +338,7 @@ function addBookmark(req, res) {
   var email = req.body.userEmail;
   var businessID = req.body.businessName;
 
-  var query = `INSERT INTO Bookmarks(User, BusinessID) 
+  var query = `INSERT INTO Bookmarks(UserEmail, BusinessID) 
         VALUES ('${email}', '${businessID}');`
   connection.query(query, function (error, rows, fields) {
     if (error) {

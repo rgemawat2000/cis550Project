@@ -47,7 +47,7 @@ app.get('/GrubHub/:selectedCity', routes.GrubHub);
 
 app.get('/categories', routes.getCategories);
 
-app.get('/bookmarks/:userEmail', routes.bookmarks);
+app.get('/bookmarks/:sessionEmail', routes.bookmarks);
 
 app.get('/areaaverage/:postalCode', routes.getAreaAverage);
 
