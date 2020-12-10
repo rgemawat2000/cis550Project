@@ -49,7 +49,8 @@ function bestCategoriesPerCity(req, res) {
   var city = req.params.selectedCity;
   var query = `
   SELECT Category as genre, AVG(Stars) as avg_rating
-	FROM Categories JOIN Businesses ON Businesses.ID = Categories.BusinessID
+  FROM Categories 
+  JOIN Businesses ON Businesses.ID = Categories.BusinessID
 	WHERE Businesses.City = '${city}'
   GROUP BY genre
   ORDER BY avg_rating DESC
@@ -69,7 +70,8 @@ function preCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
   SELECT AVG(ReviewsNoText.Stars) as output
-  FROM Businesses JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
+  FROM Businesses 
+  JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
   WHERE Businesses.City = '${city}';
 `;
 
@@ -85,7 +87,8 @@ function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
   SELECT AVG(ReviewsNoText.Stars) as output
-  FROM Businesses JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
+  FROM Businesses 
+  JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
   WHERE ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') AND Businesses.City = '${city}';
 `;
 
@@ -125,7 +128,8 @@ function ToD(req, res) {
   var city = req.params.selectedCity;
   var query = `
   SELECT COUNT(*) as output
-  FROM CovidData JOIN Businesses ON Businesses.ID = CovidData.BusinessID
+  FROM CovidData 
+  JOIN Businesses ON Businesses.ID = CovidData.BusinessID
   WHERE CovidData.DelOrTo = 'TRUE' AND Businesses.City = '${city}';
 `;
 
@@ -141,7 +145,8 @@ function GrubHub(req, res) {
   var city = req.params.selectedCity;
   var query = `
   SELECT COUNT(*) as output
-  FROM CovidData JOIN Businesses ON Businesses.ID = CovidData.BusinessID
+  FROM CovidData 
+  JOIN Businesses ON Businesses.ID = CovidData.BusinessID
   WHERE Grubhub = 'TRUE' AND Businesses.City = '${city}'
   ;
 `;
@@ -415,7 +420,8 @@ function covidBannerCity(req, res) {
   var city = req.params.selectedCity;
   var query = `
   SELECT CovidBanner AS output, name as BusinessName
-  FROM CovidData cd JOIN Businesses b ON cd.BusinessID = b.ID
+  FROM CovidData cd 
+  JOIN Businesses b ON cd.BusinessID = b.ID
   WHERE cd.CovidBanner <> "FALSE" AND b.City = '${city}'
   ORDER BY RAND() LIMIT 5;
 `;

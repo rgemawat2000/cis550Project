@@ -56,7 +56,7 @@ export default class Login extends React.Component {
                 // console.log("res json status " + msg);
                 if (msg === 200) {
                     console.log("SUCCESSS")
-                    window.location.assign('/facts');
+                    window.location.assign('/home');
                     //redirect from here; 
                 } else if (msg === 206) {
                     // console.log("Email does not exist")
