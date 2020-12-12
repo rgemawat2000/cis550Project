@@ -284,6 +284,10 @@ function getRecs(req, res) {
   if (inputService == "Yes") {
     service = "TRUE"
   }
+  if (inputRating == "") {
+    inputRating = 0
+  }
+  console.log(inputRating);
 
   var query = `
   WITH Avg_Rating AS (
