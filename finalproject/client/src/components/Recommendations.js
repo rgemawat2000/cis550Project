@@ -161,6 +161,9 @@ export default class Recommendations extends React.Component {
 	}
 
 	submitInput() {
+		if (this.state.minRating === "") {
+			this.state.minRating = "0"
+		}
 		fetch(`http://localhost:8081/recommendations/${this.state.postalCode}/${this.state.selectedCategory}/${this.state.minRating}/${this.state.selectedDelivery}/${this.state.selectedService}/${this.state.sessionEmail}`, {
 			method: 'GET' // The type of HTTP request.
 		})

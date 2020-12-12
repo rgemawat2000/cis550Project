@@ -284,10 +284,6 @@ function getRecs(req, res) {
   if (inputService == "Yes") {
     service = "TRUE"
   }
-  if (inputRating == "") {
-    inputRating = 0
-  }
-  console.log(inputRating);
 
   var query = `
   WITH Avg_Rating AS (
@@ -318,7 +314,7 @@ function getRecs(req, res) {
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
-      console.log(rows);
+      //console.log(rows);
       res.json(rows);
     }
   });
