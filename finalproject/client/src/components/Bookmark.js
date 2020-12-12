@@ -115,9 +115,9 @@ export default class Bookmark extends React.Component {
 									</div>
 								</div>
 								<div class="card-body p-3">
-									<h4 class="mb-4">{item.name}</h4>
-									<p>Address: {item.address + " " + item.city + " " + item.state}</p>
-									<p class="font-italic">Rating: {item.stars}</p>
+									<h5 > {item.name}</h5>
+									<p> Address: {item.address + " " + item.city + " " + item.state}</p>
+									<p class="font-italic"> Rating: {item.stars}</p>
 									<div class="custom-scrollbar-css p-2">
 										<p class="font-regular">
 											Enter News Article Link or Headline here
