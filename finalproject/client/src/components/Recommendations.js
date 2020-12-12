@@ -17,7 +17,10 @@ export default class Recommendations extends React.Component {
 			minRating: "",
 			areaAverage: "",
 			selectedDelivery: "",
-			selectedService: ""
+			selectedService: "",
+			sessionEmail: "",
+			sessionUsername: "",
+			disabledBtn: []
 		}
 
 		this.handlePostalChange = this.handlePostalChange.bind(this);
@@ -26,6 +29,10 @@ export default class Recommendations extends React.Component {
 		this.handleDeliveryChange = this.handleDeliveryChange.bind(this);
 		this.handleServiceChange = this.handleServiceChange.bind(this);
 		this.submitInput = this.submitInput.bind(this);
+		this.getSessionUser = this.getSessionUser.bind(this);
+		this.addBookmark = this.addBookmark.bind(this);
+		this.removeBookmark = this.removeBookmark.bind(this);
+
 		// this.renderResults = this.renderResults.bind(this);
 
 	}
@@ -61,6 +68,7 @@ export default class Recommendations extends React.Component {
 	}
 
 	componentDidMount() {
+		this.getSessionUser();
 		fetch(`http://localhost:8081/categories`, {
 			method: 'GET' // The type of HTTP request.
 		})
@@ -75,17 +83,91 @@ export default class Recommendations extends React.Component {
 				});
 			})
 			.catch(err => console.log(err))
+
 	}
 
+	getSessionUser() {
+		fetch("http://localhost:8081/getSessionUser", {
+			method: 'GET',
+			credentials: 'include'
+		})
+			.then(res => res.json())
+			.then(user => {
+				console.log(user);
+				if (user.length > 0) {
+					console.log('Session Email: ' + user[0].email);
+					console.log('Session username: ' + user[0].username);
+					this.setState({
+						sessionEmail: user[0].email,
+						sessionUsername: user[0].username
+					})
+				}
+			})
+			.catch(err => console.log(err))
+	}
+
+	addBookmark(businessID, i) {
+		var reqBody = {
+			"userEmail": this.state.sessionEmail,
+			"businessID": businessID,
+		}
+		console.log('in addBookmark' + reqBody);
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(reqBody),
+			credentials: 'include'
+		};
+		fetch("http://localhost:8081/addBookmark", requestOptions)
+			.then(res => res.json())
+			.then((code) => {
+				var msg = JSON.parse(JSON.stringify(code)).status;
+				if (msg === 200) {
+					console.log("added bookmark");
+					this.setState({
+						disabledBtn: [...this.state.disabledBtn, i]
+					});
+					console.log("hello" + this.state.disabledBtn);
+				} else if (msg === 400) {
+					console.log("error in add bookmark");
+				}
+			})
+			.catch(err => console.log(err))
+	}
+
+	removeBookmark(businessID) {
+		var reqBody = {
+			"userEmail": this.state.sessionEmail,
+			"businessID": businessID,
+		}
+		console.log('in removeBookmark' + reqBody);
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(reqBody),
+			credentials: 'include'
+		};
+		fetch("http://localhost:8081/removeBookmark", requestOptions)
+			.then(res => res.json())
+			.then((code) => {
+				var msg = JSON.parse(JSON.stringify(code)).status;
+				if (msg === 200) {
+					console.log("removed bookmark");
+				} else if (msg === 400) {
+					console.log("error in remove bookmark");
+				}
+			})
+			.catch(err => console.log(err))
+	}
 
 	submitInput() {
-		fetch(`http://localhost:8081/recommendations/${this.state.postalCode}/${this.state.selectedCategory}/${this.state.minRating}/${this.state.selectedDelivery}/${this.state.selectedService}`, {
+		fetch(`http://localhost:8081/recommendations/${this.state.postalCode}/${this.state.selectedCategory}/${this.state.minRating}/${this.state.selectedDelivery}/${this.state.selectedService}/${this.state.sessionEmail}`, {
 			method: 'GET' // The type of HTTP request.
 		})
 			.then(res => res.json())
 			.then(recValuesList => {
 				let recValuesDivs = recValuesList.map((value, i) =>
-					<tr>
+					<tr key={i}>
 						<td>
 							<span class="user-subhead">{value.name}  </span>
 						</td>
@@ -101,17 +183,23 @@ export default class Recommendations extends React.Component {
 						<td>
 							{value.open === 1 ?
 								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+									<path fillRule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
 								</svg> :
 								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
+									<path fillRule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
 								</svg>}
 						</td>
 						<td>
-							TBD
-							<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star" fill="cadetblue" xmlns="http://www.w3.org/2000/svg">
+							{
+								value.hasBookmark === null ?
+									<button className="btn btn-info" id="addBookmarksBtn" disabled={this.state.disabledBtn.includes(i)}
+										onClick={() => this.addBookmark(value.ID)}>Add</button>
+									: <span />
+							}
+							{/* <button className="btn btn-alert" id="removeBookmarksBtn" onClick={() => this.removeBookmark(value.ID)}>Remove from Bookmarks</button> */}
+							{/* <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star" fill="cadetblue" xmlns="http://www.w3.org/2000/svg">
 								<path fill-rule="evenodd" d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.523-3.356c.329-.314.158-.888-.283-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767l-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288l1.847-3.658 1.846 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.564.564 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
-							</svg>
+							</svg> */}
 						</td>
 					</tr>
 				);
@@ -139,7 +227,6 @@ export default class Recommendations extends React.Component {
 	}
 
 	render() {
-
 		return (
 			<div className="Recommendations">
 				<PageNavbar active="recommendations" />
@@ -217,52 +304,6 @@ export default class Recommendations extends React.Component {
 						</div>
 					</div>
 				</div>
-
-				{/* <div className="container recommendations-container">
-					<div className="jumbotron">
-						<div className="h5">Recommendations</div>
-						<br></br>
-						<div className="input-container">
-							<input type='text' placeholder="Enter Postal Code" value={this.state.postalCode} onChange={this.handlePostalChange} id="postalCode" className="postal-input" />
-							<div className="dropdown-container">
-								<select value={this.state.selectedCategory} onChange={this.handleCategoryChange} className="dropdown" id="categoriesDropdown">
-									<option select value> -- Select a Category -- </option>
-									{this.state.categories}
-								</select>
-							</div>
-							<div className="dropdown-container">
-								<select value={this.state.selectedDelivery} onChange={this.handleDeliveryChange} className="dropdown" id="deliveryDropdown">
-									<option select value> -- Delivery or Takeout -- </option>
-									<option value="Yes">Yes</option>
-									<option value="No">No</option>
-								</select>
-							</div>
-							<div className="dropdown-container">
-								<select value={this.state.selectedService} onChange={this.handleServiceChange} className="dropdown" id="servicesDropdown">
-									<option select value> -- Virtual Services -- </option>
-									<option value="Yes">Yes</option>
-									<option value="No">No</option>
-								</select>
-							</div>
-							<input type='text' placeholder="Enter Minimum Rating" value={this.state.minRating} onChange={this.handleRatingChange} id="minRating" className="rating-input" />
-							<button id="submitInputBtn" className="submit-btn" onClick={this.submitInput}>Submit</button>
-						</div>
-						<div className="header-container">
-							<div className="h6" id="area_average">{this.state.areaAverage}</div>
-							<div className="h6">We Recommend ...</div>
-							<div className="headers">
-								<div className="header"><strong>Name</strong></div>
-								<div className="header"><strong>Address</strong></div>
-								<div className="header"><strong>Rating</strong></div>
-								<div className="header"><strong>Above Area Average</strong></div>
-								<div className="header"><strong>Open</strong></div>
-							</div>
-						</div>
-						<div className="results-container" id="results">
-							{this.state.recValues}
-						</div>
-					</div>
-				</div> */}
 			</div>
 		);
 	}

@@ -146,7 +146,7 @@ function GrubHub(req, res) {
   var query = `
   SELECT COUNT(*) as output
   FROM CovidData 
-  JOIN Businesses ON Businesses.ID = CovidData.BusinessID
+  getRecsJOIN Businesses ON Businesses.ID = CovidData.BusinessID
   WHERE Grubhub = 'TRUE' AND Businesses.City = '${city}'
   ;
 `;
@@ -210,7 +210,7 @@ async function addNewUser(req, res) {
       }
       else {
         var query = `INSERT INTO USERS(email, password, username) 
-        VALUES ('${user.email}', '${encryptedPassword}', '${user.username}');`
+        VALUES ('${user.email.toLowerCase()}', '${encryptedPassword}', '${user.username}');`
         connection.query(query, function (error, rows, fields) {
           if (error) {
             res.send({
@@ -269,11 +269,13 @@ async function validateLogin(req, res) {
 }
 
 function getRecs(req, res) {
+  console.log(req);
   var inputPC = req.params.postalCode;
   var inputCategory = req.params.category;
   var inputRating = req.params.minRating;
   var inputDelivery = req.params.delivery;
   var inputService = req.params.service;
+  var user = req.params.useremail.toLowerCase();
   var delivery = "FALSE"
   var service = "FALSE"
   if (inputDelivery == "Yes") {
@@ -284,19 +286,28 @@ function getRecs(req, res) {
   }
 
   var query = `
-  WITH Avg_Rating AS (SELECT Businesses.PostalCode, AVG(Stars) as Avg_Area_Rating
+  WITH Avg_Rating AS (
+  SELECT Businesses.PostalCode, AVG(Stars) as Avg_Area_Rating
   FROM Businesses
-  GROUP BY Businesses.PostalCode)
+  GROUP BY Businesses.PostalCode),
+  userBookMarks AS (
+  SELECT Bookmarks.BusinessID
+  FROM Bookmarks
+  WHERE Bookmarks.UserEmail = '${user}'
+  )
   SELECT DISTINCT Name AS name, Address AS address, Businesses.Stars AS rating, 
+  Businesses.ID, userBookMarks.BusinessID as hasBookmark,
   CASE
     WHEN Businesses.Stars >= Avg_Area_Rating THEN "Yes"
 	  ELSE "No"
   END AS abv_avg, IsOpen AS open
   FROM Businesses 
+  LEFT JOIN userBookMarks ON Businesses.ID = userBookMarks.BusinessID
   JOIN Categories ON Businesses.ID = Categories.BusinessID
   JOIN Avg_Rating ON Businesses.PostalCode = Avg_Rating.PostalCode
   JOIN CovidData ON Businesses.ID = CovidData.BusinessID
-  WHERE Businesses.PostalCode = ${inputPC} AND Category = '${inputCategory}' AND Businesses.Stars >= ${inputRating}
+  WHERE Businesses.PostalCode = ${inputPC} 
+  AND Category = '${inputCategory}' AND Businesses.Stars >= ${inputRating}
   AND CovidData.DelOrTo = '${delivery}' AND CovidData.VirtualServices = '${service}'
   ORDER BY Businesses.Stars DESC, Name 
   `;
@@ -324,11 +335,13 @@ function getCategories(req, res) {
 };
 
 function bookmarks(req, res) {
-  var user = req.params.userEmail;
+  var user = req.params.sessionEmail.toLowerCase();
   var query = `SELECT Businesses.Name as name, Businesses.Address as address,
   Businesses.City as city, Businesses.State as state, Businesses.Stars as stars,
-  FROM Businesses JOIN Bookmarks ON Bookmarks.BusinessID = Businesses.ID
-  WHERE Bookmarks.UserEmail = ${user}
+  Businesses.ID as ID 
+  FROM Businesses 
+  JOIN Bookmarks ON Bookmarks.BusinessID = Businesses.ID
+  WHERE Bookmarks.UserEmail = '${user}'
   `;
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -340,9 +353,9 @@ function bookmarks(req, res) {
 };
 
 function addBookmark(req, res) {
-  var email = req.body.userEmail;
-  var businessID = req.body.businessName;
-
+  var email = req.body.userEmail.toLowerCase();
+  var businessID = req.body.businessID;
+  console.log("in addBookmark email " + email + " " + businessID);
   var query = `INSERT INTO Bookmarks(UserEmail, BusinessID) 
         VALUES ('${email}', '${businessID}');`
   connection.query(query, function (error, rows, fields) {
@@ -355,6 +368,28 @@ function addBookmark(req, res) {
       res.send({
         "status": 200,
         "success": "bookmark added sucessfully"
+      });
+    }
+  });
+}
+
+function removeBookmark(req, res) {
+  var email = req.body.userEmail.toLowerCase();
+  var businessID = req.body.businessID;
+  var query = `
+  DELETE FROM Bookmarks 
+  WHERE UserEmail = '${email}' AND BusinessID ='${businessID}';
+  `
+  connection.query(query, function (error, rows, fields) {
+    if (error) {
+      res.send({
+        "status": 400,
+        "failed": "error ocurred"
+      })
+    } else {
+      res.send({
+        "status": 200,
+        "success": "bookmark removed sucessfully"
       });
     }
   });
@@ -396,7 +431,7 @@ function getSessionUser(req, res) {
   console.log("Session Email: " + req.session.email);
   var query = `SELECT email, username 
   FROM USERS 
-  WHERE email = '${req.session.email}'
+  WHERE email = '${req.session.email.toLowerCase()}'
   `
   connection.query(query, function (error, rows, fields) {
     if (error) {
@@ -454,5 +489,6 @@ module.exports = {
   bookmarks: bookmarks,
   logout: logout,
   getSessionUser: getSessionUser,
-  addBookmark: addBookmark
+  addBookmark: addBookmark,
+  removeBookmark: removeBookmark
 }

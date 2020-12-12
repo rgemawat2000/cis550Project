@@ -51,7 +51,7 @@ app.get('/bookmarks/:sessionEmail', routes.bookmarks);
 
 app.get('/areaaverage/:postalCode', routes.getAreaAverage);
 
-app.get('/recommendations/:postalCode/:category/:minRating/:delivery/:service', routes.getRecs);
+app.get('/recommendations/:postalCode/:category/:minRating/:delivery/:service/:useremail', routes.getRecs);
 
 app.get('/covidBanner', routes.covidBanner);
 
@@ -62,6 +62,9 @@ app.get('/logout', routes.logout);
 app.get('/getSessionUser', routes.getSessionUser);
 
 app.post('/addBookmark', routes.addBookmark);
+
+app.post('/removeBookmark', routes.removeBookmark);
+
 
 
 app.listen(8081, () => {

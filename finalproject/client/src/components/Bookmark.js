@@ -1,8 +1,6 @@
 import React from 'react';
-import BookmarkRow from './BookmarkRow';
-import '../style/BestGenres.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../style/BestGenres.css';
+import '../style/Bookmark.css';
 import PageNavbar from './PageNavbar';
 
 
@@ -18,6 +16,7 @@ export default class Bookmark extends React.Component {
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.getSessionUser = this.getSessionUser.bind(this);
+		this.removeBookmark = this.removeBookmark.bind(this);
 	}
 
 	componentDidMount() {
@@ -45,135 +44,150 @@ export default class Bookmark extends React.Component {
 					this.setState({
 						sessionEmail: user[0].email,
 						sessionUsername: user[0].username
+					});
+
+					fetch("http://localhost:8081/bookmarks/" + this.state.sessionEmail, {
+						method: 'GET',
 					})
+						.then(res => res.json()) // Convert the response data to a JSON.
+						.then(bookmarkList => {
+							if (!bookmarkList) return;
+
+							// let bookmarkDivs = bookmarkList.map((bookmarkObj, i) =>
+							// 	<BookmarkRow name={bookmarkObj.name} address={bookmarkObj.address} city={bookmarkObj.city} state={bookmarkObj.state} stars={bookmarkObj.stars} />
+							// );
+
+							this.setState({
+								bookmarks: bookmarkList
+							})
+						})
+						.catch(err => console.log(err))
 				}
 			})
 			.catch(err => console.log(err))
 
-			fetch("http://localhost:8081/bookmarks" + this.state.sessionEmail, {
-			method: 'GET',
-		})
-		.then(res => res.json()) // Convert the response data to a JSON.
-		.then(bookmarkList => {
-			if (!bookmarkList) return;
-			// Map each genreObj in genreList to an HTML element:
-			// A button which triggers the showMovies function for each genre.
-			let bookmarkDivs = bookmarkList.map((bookmarkObj, i) =>
-				<BookmarkRow name={bookmarkObj.name} address={bookmarkObj.address} city={bookmarkObj.city} state={bookmarkObj.state} stars={bookmarkObj.stars}/>
 
-			);
+	}
 
-			this.setState({
-				bookmarks: bookmarkDivs
+	removeBookmark(businessID) {
+		var reqBody = {
+			"userEmail": this.state.sessionEmail,
+			"businessID": businessID,
+		}
+		console.log('in removeBookmark' + reqBody);
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(reqBody),
+			credentials: 'include'
+		};
+		fetch("http://localhost:8081/removeBookmark", requestOptions)
+			.then(res => res.json())
+			.then((code) => {
+				var msg = JSON.parse(JSON.stringify(code)).status;
+				if (msg === 200) {
+					console.log("removed bookmark");
+					window.location.reload();
+				} else if (msg === 400) {
+					console.log("error in remove bookmark");
+				}
 			})
-		})
 			.catch(err => console.log(err))
 	}
 
+	renderList(bookmarkList) {
+		if (Array.isArray(bookmarkList)) {
+			return (
+				bookmarkList.map(((item, i) => (
+					<div class="row" key={i}>
+						<div class="col-lg-8 mx-auto">
+							<div class="card mb-4">
+								<div class="card-header">
+									<div class='row'>
+										<div class="col-name">
+											<h4>{item.name}</h4>
+										</div>
+										<div class="col">
+											<button className="btn btn-warning" id="removeBookmarksBtn"
+												onClick={() => this.removeBookmark(item.ID)}>Remove
+											</button>
+										</div>
+									</div>
+								</div>
+								<div class="card-body p-3">
+									<h4 class="mb-4">{item.name}</h4>
+									<p>Address: {item.address + " " + item.city + " " + item.state}</p>
+									<p class="font-italic">Rating: {item.stars}</p>
+									<div class="custom-scrollbar-css p-2">
+										<p class="font-regular">
+											Enter News Article Link or Headline here
+										</p>
+										<p class="font-italic">
+											Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, soluta, cupiditate.
+											Ad ab, delectus impedit similique voluptate fuga nemo iure, nobis dolorem dolor,
+											quia voluptas aperiam doloremque commodi id? In? Lorem ipsum dolor sit amet,
+											consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+											aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+											laboris nisi ut aliquip ex ea commodo consequat.
+											Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+											nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+											officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet,
+											consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+											labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+											ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+											reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+											Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+											anim id est laborum.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				)))
+			)
+		} else {
+			return (
+				<div>
+					<p> No boomarked Businesses to show</p>
+				</div>
+			)
+		}
+	}
 
 	render() {
 
 		return (
 			<div>
-				<PageNavbar active="bookmark" />
-
-				<div id="page-wrapper" class="container">
-					<div class="row">
-						<div class="col-lg-12">
-							<h1>{this.state.sessionUsername}'s Bookmarked Businesses</h1>
+				<PageNavbar active="bookmarks" />
+				<div class="container py-5">
+					<header class="text-black">
+						<div class="row py-5">
+							<div class="col-lg-7 mx-auto">
+								<h2>{this.state.sessionUsername}'s Bookmarked Businesses</h2>
+							</div>
 						</div>
-					</div>
+					</header>
 
-					<div class="row">
-						<div class="col-lg-4">
-							<div class="card">
-							<div className="movie">
-											<div className="header"><strong>Name </strong><strong>Address </strong><strong>City </strong><strong>State </strong><strong>Stars </strong></div>
-										</div>
-								<div class="card-body">
-									<div className="movies-container" id="results">
-										{this.state.bookmarks}
+					{/* <div class="row py-5">
+						<div class="col-lg-8 mx-auto">
+							<div class="card mb-4">
+								<div class="card-header">
+									Top 10 Rated Businesses By Categories
+  								</div>
+								<div class="card-body p-5">
+									<h4 class="mb-4">Gradient Scrollbar</h4>
+									<h4>Gradient Scrollbar</h4>
+									<div class="custom-scrollbar-css p-2">
+										<p class="font-italic">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, soluta, cupiditate. Ad ab, delectus impedit similique voluptate fuga nemo iure, nobis dolorem dolor, quia voluptas aperiam doloremque commodi id? In? Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 									</div>
 								</div>
 							</div>
 						</div>
+					</div> */}
 
-
-
-
-					</div>
+					{this.renderList(this.state.bookmarks)}
 				</div>
-
-				{/* <div className="Facts">
-					<div className="container bestgenres-container">
-						<div className>
-							<div className="h5">Facts by City</div>
-
-							<div className="years-container">
-								<div className="dropdown-container">
-									<select value={this.state.selectedCity} onChange={this.handleChange} className="dropdown" id="decadesDropdown">
-										<option select value> -- select an option -- </option>
-										{this.state.cities}
-									</select>
-									<button className="submit-btn" id="decadesSubmitBtn" onClick={this.submitCity}>Submit</button>
-								</div>
-							</div>
-						</div>
-						<div className="jumbotron">
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Top 10 Best Rated Business Categories</strong></div>
-									<div className="header"><strong>Average Rating</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.categories}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Pre-COVID Average Rating</strong></div>
-									<div className="header"><strong>need to change  -> just gives overall average</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.preCovidRating}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Mid-COVID Average Rating</strong></div>
-									<div className="header"><strong>need to change  -> just gives overall average</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.preCovidRating}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Percentage of Businesses Open </strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.percentOpen}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Number of Businesses Offering Takeout/Delivery</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.ToD}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Number of Businesses on GrubHub</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.GrubHub}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> */}
 			</div>
 		);
 	}
