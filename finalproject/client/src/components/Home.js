@@ -92,7 +92,7 @@ export default class Home extends React.Component {
 		// To query /v2/top-headlines
 		const q = this.state.selectedCity + " covid";
 		const apiKey = "6ff968d8d8ff4f908f43980bba2d884b";
-		const url = `https://newsapi.org/v2/everything?qInTitle=+${q}&apiKey=${apiKey}`;
+		const url = `https://newsapi.org/v2/everything?qInTitle=+${q}&apiKey=${apiKey}&sortBy=popularity`;
 		const request = new Request(url);
 
 		// fetch news
@@ -159,18 +159,28 @@ export default class Home extends React.Component {
 		}
 	}
 
-	renderNews = (resultList) => {
-		if (Array.isArray(resultList)) {
+	renderNews(newsList) {
+		if (Array.isArray(newsList) && newsList.length != 0) {
 			return (
-				resultList.map(((item, i, resultList) => (
-					<div class="custom-scrollbar-css p-2">
-						<p class="font-regular">
-							{item.title}
-						</p>
-						<a href={item.url}>{item.title}</a>
-						<p class="font-italic">
-							{item.description}
-						</p>
+				newsList.map(((item, i) => (
+					<div class="row" key={i}>
+						<div class="col-lg-8 mx-auto">
+							<div class="card mb-4">
+								<div class="card-header">
+									<div class='row'>
+										<div class="col-name">
+											<h4><a href={item.url} target="_blank">{item.title}</a></h4>
+											
+										</div>
+									</div>
+								</div>
+								<div class="card-body p-3">
+									<h5 > {item.description}</h5>
+									<p>{item.content}</p>
+									<p> Author: <i>{item.author}</i>  Source: <i>{item.source.name}</i></p>
+								</div>
+							</div>
+						</div>
 					</div>
 				)))
 			)
@@ -209,22 +219,30 @@ export default class Home extends React.Component {
 					</div>
 
 					{this.state.covidBanner.length === 0 ? <span /> :
-						<div className="row">
-							<div className="col-md-12">
-								<div className="card">
-									<div className="card-body">
-										<h3 className="card-title">Covid Banners</h3>
-										<div id="content">
-											<ul className="timeline">
-												{this.renderCovidBanner(this.state.covidBanner)}
-											</ul>
+						<div>
+							<div className="row">
+								<div className="col-md-12">
+									<div className="card">
+										<div className="card-body">
+											<h3 className="card-title">Covid Banners</h3>
+											<div id="content">
+												<ul className="timeline">
+													{this.renderCovidBanner(this.state.covidBanner)}
+												</ul>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-
-							{this.renderNews(this.state.cityNews)}
-						</div>
+							<div className="row">
+								<div className="col-md-12">
+									<div className="card">
+										<h3>News from {this.state.selectedCity}</h3>
+										{this.renderNews(this.state.cityNews)}
+									</div>
+								</div>
+							</div>
+						</div>	
 					}
 				</div>
 			</div >
