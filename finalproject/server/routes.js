@@ -146,7 +146,7 @@ function GrubHub(req, res) {
   var query = `
   SELECT COUNT(*) as output
   FROM CovidData 
-  getRecsJOIN Businesses ON Businesses.ID = CovidData.BusinessID
+  JOIN Businesses ON Businesses.ID = CovidData.BusinessID
   WHERE Grubhub = 'TRUE' AND Businesses.City = '${city}'
   ;
 `;
