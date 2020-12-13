@@ -4,9 +4,7 @@ import {
 	Route,
 	Switch
 } from 'react-router-dom';
-import Dashboard from './Dashboard';
 import Recommendations from './Recommendations';
-import BestGenres from './BestGenres';
 import Login from './Login';
 import Landing from './Landing';
 import SignUp from './SignUp';
@@ -29,22 +27,9 @@ export default class App extends React.Component {
 							)}
 						/>
 						<Route
-							exact
-							path="/dashboard"
-							render={() => (
-								<Dashboard />
-							)}
-						/>
-						<Route
 							path="/recommendations"
 							render={() => (
 								<Recommendations />
-							)}
-						/>
-						<Route
-							path="/bestgenres"
-							render={() => (
-								<BestGenres />
 							)}
 						/>
 						<Route
@@ -63,16 +48,16 @@ export default class App extends React.Component {
 						<Route
 							path="/facts"
 							render={() => (
-								<Facts/>
+								<Facts />
 							)}
 						/>
 						<Route
 							path="/bookmarks"
 							render={() => (
-								<Bookmark/>
+								<Bookmark />
 							)}
 						/>
-						
+
 						<Route
 							path="/landing"
 							render={() => (

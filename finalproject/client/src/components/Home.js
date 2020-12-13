@@ -3,7 +3,6 @@ import '../style/Facts.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../style/Home.css';
 import PageNavbar from './PageNavbar';
-import SingleOutputRow from './SingleOutputRow';
 
 export default class Home extends React.Component {
 	constructor(props) {
@@ -79,12 +78,8 @@ export default class Home extends React.Component {
 			.then(res => res.json()) // Convert the response data to a JSON.
 			.then(covidBannerList => {
 				if (!covidBannerList) return;
-				console.log(covidBannerList);
+				// console.log(covidBannerList);
 				// // Map each covidBannerObj in covidBannerList to an HTML element:
-				// let covidBannerDivs = covidBannerList.map((covidBannerObj, i) => {
-				// 	return <SingleOutputRow output={covidBannerObj} />
-				// });
-
 				this.setState({
 					covidBanner: covidBannerList
 				})

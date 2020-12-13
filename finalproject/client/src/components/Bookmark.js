@@ -87,7 +87,12 @@ export default class Bookmark extends React.Component {
 				var msg = JSON.parse(JSON.stringify(code)).status;
 				if (msg === 200) {
 					console.log("removed bookmark");
-					window.location.reload();
+					var newBookmarks = this.state.bookmarks.filter(item => {
+						return item.ID !== businessID
+					}); 
+					this.setState({
+						bookmarks: newBookmarks
+					});
 				} else if (msg === 400) {
 					console.log("error in remove bookmark");
 				}
@@ -107,7 +112,7 @@ export default class Bookmark extends React.Component {
 										<div class="col-name">
 											<h4>{item.name}</h4>
 										</div>
-										<div class="col">
+										<div class="col" align="right">
 											<button className="btn btn-warning" id="removeBookmarksBtn"
 												onClick={() => this.removeBookmark(item.ID)}>Remove
 											</button>
@@ -168,24 +173,6 @@ export default class Bookmark extends React.Component {
 							</div>
 						</div>
 					</header>
-
-					{/* <div class="row py-5">
-						<div class="col-lg-8 mx-auto">
-							<div class="card mb-4">
-								<div class="card-header">
-									Top 10 Rated Businesses By Categories
-  								</div>
-								<div class="card-body p-5">
-									<h4 class="mb-4">Gradient Scrollbar</h4>
-									<h4>Gradient Scrollbar</h4>
-									<div class="custom-scrollbar-css p-2">
-										<p class="font-italic">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, soluta, cupiditate. Ad ab, delectus impedit similique voluptate fuga nemo iure, nobis dolorem dolor, quia voluptas aperiam doloremque commodi id? In? Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div> */}
-
 					{this.renderList(this.state.bookmarks)}
 				</div>
 			</div>

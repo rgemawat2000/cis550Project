@@ -1,10 +1,10 @@
 import React from 'react';
-import BestGenreRow from './BestGenreRow';
-import SingleOutputRow from './SingleOutputRow';
 import '../style/BestGenres.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../style/Facts.css';
 import PageNavbar from './PageNavbar';
+import SingleOutputRow from './SingleOutputRow';
+import BestGenreRow from './BestGenreRow';
 
 
 export default class Facts extends React.Component {
@@ -24,6 +24,7 @@ export default class Facts extends React.Component {
 
 		this.submitCity = this.submitCity.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.renderList = this.renderList.bind(this);
 	}
 
 
@@ -66,7 +67,7 @@ export default class Facts extends React.Component {
 				// Map each genreObj in genreList to an HTML element:
 				// A button which triggers the showMovies function for each genre.
 				let bestCatDivs = bestCatList.map((bestCatObj, i) =>
-					<BestGenreRow genre={bestCatObj.genre} avg_rating={bestCatObj.avg_rating} />
+					<BestGenreRow key={i} genre={bestCatObj.genre} avg_rating={bestCatObj.avg_rating} />
 
 				);
 
@@ -86,8 +87,7 @@ export default class Facts extends React.Component {
 				// Map each genreObj in genreList to an HTML element:
 				// A button which triggers the showMovies function for each genre.
 				let pCRatingDivs = pCRatingList.map((pCRatingObj, i) =>
-					<SingleOutputRow output={pCRatingObj.output} />
-
+					<SingleOutputRow key={i} output={pCRatingObj.output} />
 				);
 
 				this.setState({
@@ -106,7 +106,7 @@ export default class Facts extends React.Component {
 				// Map each genreObj in genreList to an HTML element:
 				// A button which triggers the showMovies function for each genre.
 				let mCRatingDivs = mCRatingList.map((mCRatingObj, i) =>
-					<SingleOutputRow output={mCRatingObj.output} />
+					<SingleOutputRow key={i} output={mCRatingObj.output} />
 
 				);
 
@@ -126,7 +126,7 @@ export default class Facts extends React.Component {
 				// Map each genreObj in genreList to an HTML element:
 				// A button which triggers the showMovies function for each genre.
 				let percentOpenDivs = percentOpenList.map((percentOpenObj, i) =>
-					<SingleOutputRow output={percentOpenObj.output * 100} />
+					<SingleOutputRow key={i} output={percentOpenObj.output * 100} />
 				);
 
 				this.setState({
@@ -145,7 +145,7 @@ export default class Facts extends React.Component {
 				// Map each genreObj in genreList to an HTML element:
 				// A button which triggers the showMovies function for each genre.
 				let ToDDivs = ToDList.map((ToDObj, i) =>
-					<SingleOutputRow output={ToDObj.output} />
+					<SingleOutputRow key={i} output={ToDObj.output} />
 
 				);
 
@@ -166,7 +166,6 @@ export default class Facts extends React.Component {
 				// A button which triggers the showMovies function for each genre.
 				let GrubHubDivs = GrubHubList.map((GrubHubObj, i) =>
 					<SingleOutputRow output={GrubHubObj.output} />
-
 				);
 
 				this.setState({
@@ -174,6 +173,27 @@ export default class Facts extends React.Component {
 				})
 			})
 			.catch(err => console.log(err))	// Print the error if there is one.
+	}
+
+	renderList(resultList) {
+		if (Array.isArray(resultList)) {
+			return (
+				<table>
+					<tbody>
+						{resultList.map(((value, i) => (
+							<tr key={i}>
+								<td>
+									<span class="user-subhead">{value.genre}  </span>
+								</td>
+								<td>
+									{value.avg_rating}
+								</td>
+							</tr>
+						)))}
+					</tbody>
+				</table>
+			)
+		}
 	}
 
 	render() {
@@ -207,11 +227,13 @@ export default class Facts extends React.Component {
 						<div class="col-lg-4">
 							<div class="card">
 								<div class="card-header">
-									Top 10 Rated Businesses By Categories
+									Top 10 Rated Business Categories
   								</div>
 								<div class="card-body">
 									<div className="movies-container" id="results">
-										{this.state.categories}
+										<table> <tbody>
+											{this.state.categories}
+										</tbody></table>
 									</div>
 								</div>
 							</div>
@@ -223,33 +245,34 @@ export default class Facts extends React.Component {
 									Overall Businesses Stats
   								</div>
 								<div class="card-body">
-									{/* <h5 class="card-title">Special title treatment</h5>
-									<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-									<a href="#" class="btn btn-primary">Go somewhere</a> */}
-									<div className="movies-container">
-										<div className="movie">
-											<div className="header"><strong>Percentage of Businesses Open </strong></div>
-										</div>
-										<div className="movies-container" id="results">
-											{this.state.percentOpen}
-										</div>
-									</div>
-									<div className="movies-container">
-										<div className="movie">
-											<div className="header"><strong>Number of Businesses Offering Takeout/Delivery</strong></div>
-										</div>
-										<div className="movies-container" id="results">
-											{this.state.ToD}
-										</div>
-									</div>
-									<div className="movies-container">
-										<div className="movie">
-											<div className="header"><strong>Number of Businesses on GrubHub</strong></div>
-										</div>
-										<div className="movies-container" id="results">
-											{this.state.GrubHub}
-										</div>
-									</div>
+									<table>
+										<tbody>
+											<tr>
+												<td className="tRow">
+													<strong>Percentage of Businesses Open </strong>
+												</td>
+												<td className="tRow">
+													{this.state.percentOpen}
+												</td>
+											</tr>
+											<tr>
+												<td className="tRow">
+													<strong>Number of Businesses Offering Takeout/Delivery</strong>
+												</td>
+												<td className="tRow">
+													{this.state.ToD}
+												</td>
+											</tr>
+											<tr>
+												<td className="tRow">
+													<strong>Number of Businesses on GrubHub</strong>
+												</td>
+												<td className="tRow">
+													{this.state.GrubHub}
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>
@@ -260,100 +283,32 @@ export default class Facts extends React.Component {
 									Average Ratings
   								</div>
 								<div class="card-body">
-									<div className="movies-container">
-										<div className="movie">
-											<div className="header"><strong>Overall Average</strong></div>
-											{/* <div className="header"><strong>need to change -> just gives overall average</strong></div> */}
-										</div>
-										<div className="movies-container" id="results">
-											{this.state.preCovidRating}
-										</div>
-									</div>
-									<div className="movies-container">
-										<div className="movie">
-											<div className="header"><strong>Recent Average (2019 to Present)</strong></div>
-											{/* <div className="header"><strong>need to change -> just gives overall average</strong></div> */}
-										</div>
-										<div className="movies-container" id="results">
-											{this.state.midCovidRating}
-										</div>
-									</div>
+									<table>
+										<tbody>
+											<tr >
+												<td className="tRow">
+													<strong>Overall Average</strong>
+												</td>
+												<td className="tRow">
+													{this.state.preCovidRating}
+
+												</td>
+											</tr>
+											<tr className="tRow">
+												<td className="tRow">
+													<strong>Recent Average (2019 to Present)</strong>
+												</td>
+												<td className="tRow">
+													{this.state.midCovidRating}
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-
-				{/* <div className="Facts">
-					<div className="container bestgenres-container">
-						<div className>
-							<div className="h5">Facts by City</div>
-
-							<div className="years-container">
-								<div className="dropdown-container">
-									<select value={this.state.selectedCity} onChange={this.handleChange} className="dropdown" id="decadesDropdown">
-										<option select value> -- select an option -- </option>
-										{this.state.cities}
-									</select>
-									<button className="submit-btn" id="decadesSubmitBtn" onClick={this.submitCity}>Submit</button>
-								</div>
-							</div>
-						</div>
-						<div className="jumbotron">
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Top 10 Best Rated Business Categories</strong></div>
-									<div className="header"><strong>Average Rating</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.categories}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Pre-COVID Average Rating</strong></div>
-									<div className="header"><strong>need to change  -> just gives overall average</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.preCovidRating}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Mid-COVID Average Rating</strong></div>
-									<div className="header"><strong>need to change  -> just gives overall average</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.preCovidRating}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Percentage of Businesses Open </strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.percentOpen}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Number of Businesses Offering Takeout/Delivery</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.ToD}
-								</div>
-							</div>
-							<div className="movies-container">
-								<div className="movie">
-									<div className="header"><strong>Number of Businesses on GrubHub</strong></div>
-								</div>
-								<div className="movies-container" id="results">
-									{this.state.GrubHub}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> */}
 			</div>
 		);
 	}

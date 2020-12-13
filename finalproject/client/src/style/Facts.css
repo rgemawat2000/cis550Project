@@ -46,3 +46,9 @@ body {
 .container {
     margin-top: 10px;
 }
+
+.tRow {
+    padding-bottom: 15px;
+    padding-left: 5px;
+
+}

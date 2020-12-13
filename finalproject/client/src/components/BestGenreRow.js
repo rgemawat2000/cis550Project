@@ -2,16 +2,17 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default class BestGenreRow extends React.Component {
-	constructor(props) {
-		super(props);
-	}
 
 	render() {
 		return (
-			<div className="movieResults">
-				<div className="genre">{this.props.genre}</div>
-				<div className="rating">{this.props.avg_rating}</div>
-			</div>
+			<tr>
+				<td>
+					<span class="user-subhead">{this.props.genre}  </span>
+				</td>
+				<td>
+					{this.props.avg_rating}
+				</td>
+			</tr>
 		);
 	}
 }
