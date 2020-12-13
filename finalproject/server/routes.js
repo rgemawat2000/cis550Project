@@ -69,10 +69,14 @@ function bestCategoriesPerCity(req, res) {
 function preCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT AVG(ReviewsNoText.Stars) as output
-  FROM Businesses 
-  JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
-  WHERE Businesses.City = '${city}';
+  WITH a AS (
+    SELECT ID
+    FROM Businesses
+    WHERE City = '${city}')
+       
+    SELECT AVG(ReviewsNoText.Stars) as output
+      FROM ReviewsNoText
+      JOIN a ON a.ID = ReviewsNoText.BusinessID;
 `;
 
   connection.query(query, function (err, rows, fields) {
@@ -86,10 +90,15 @@ function preCovidRating(req, res) {
 function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT AVG(ReviewsNoText.Stars) as output
-  FROM Businesses 
-  JOIN ReviewsNoText ON Businesses.ID = ReviewsNoText.BusinessID
-  WHERE ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') AND Businesses.City = '${city}';
+  WITH a AS (
+    SELECT ID
+    FROM Businesses
+    WHERE City = '${city}')
+       
+    SELECT AVG(ReviewsNoText.Stars) as output
+      FROM ReviewsNoText
+      JOIN a ON a.ID = ReviewsNoText.BusinessID
+      WHERE ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i');
 `;
 
   connection.query(query, function (err, rows, fields) {
