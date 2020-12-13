@@ -265,28 +265,28 @@ export default class Recommendations extends React.Component {
 			<div className="Recommendations">
 				<PageNavbar active="recommendations" />
 
-				<div id="page-wrapper" class="container">
-					<div class="row">
-						<div class="col-lg-12">
+				<div id="page-wrapper" className="container">
+					<div className="row">
+						<div className="col-lg-12">
 							<h1>Recommendations</h1>
-							<div class="alert alert-info"> Select options to get recommendations </div>
+							<div className="alert alert-info"> Select options to get recommendations </div>
 						</div>
 					</div>
 
-					<div class="row">
+					<div className="row">
 						<div className="col-sm-2">
-							<input type="text" class="form-control" placeholder="Enter Postal Code" value={this.state.postalCode}
+							<input type="text" className="form-control" placeholder="Enter Postal Code" value={this.state.postalCode}
 								aria-label="Username" aria-describedby="basic-addon1" onChange={this.handlePostalChange} id="postalCode" />
 						</div>
 						<div className="col-sm-3">
-							<select class="form-control select2" value={this.state.selectedCategory}
+							<select className="form-control select2" value={this.state.selectedCategory}
 								onChange={this.handleCategoryChange} id="categoriesDropdown">
-								<option select value> -- Select a Category -- </option>
-								{this.state.categories}
+									<option> -- Select a Category -- </option>
+									{this.state.categories}
 							</select>
 						</div>
 						<div className="col-sm-4">
-							<select class="form-control select2" value={this.state.selectedService} onChange={this.handleServiceChange} id="servicesDropdown">
+							<select className="form-control select2" value={this.state.selectedService} onChange={this.handleServiceChange} id="servicesDropdown">
 								<option select value> -- Virtual Services Offered ? -- </option>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
@@ -294,33 +294,33 @@ export default class Recommendations extends React.Component {
 						</div>
 
 					</div>
-					<div class="row">
+					<div className="row">
 						<div className="col-sm-4">
-							<select class="form-control select2" value={this.state.selectedDelivery} onChange={this.handleDeliveryChange} id="deliveryDropdown">
+							<select className="form-control select2" value={this.state.selectedDelivery} onChange={this.handleDeliveryChange} id="deliveryDropdown">
 								<option select value> -- Delivery / Takeout Offered ?-- </option>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
 							</select>
 						</ div>
-						<div class="col-sm-3">
-							<input type="text" class="form-control" placeholder="Enter Minimum Rating" value={this.state.minRating}
+						<div className="col-sm-3">
+							<input type="text" className="form-control" placeholder="Enter Minimum Rating" value={this.state.minRating}
 								aria-label="Username" aria-describedby="basic-addon1" onChange={this.handleRatingChange} id="minRating" />
 						</div>
-						<div class="col-sm-3">
+						<div className="col-sm-3">
 							<button className="btn btn-danger" id="submitInputBtn" onClick={this.submitInput}>Submit</button>
 						</div>
 					</div>
 
 					<div className="areaAvg" id="area_average"> {this.state.areaAverage} </div>
-					<div class="row">
-						<div class="main-box no-header clearfix">
-							<div class="main-box-body clearfix">
-								<table class="table user-list">
+					<div className="row">
+						<div className="main-box no-header clearfix">
+							<div className="main-box-body clearfix">
+								<table className="table user-list">
 									<thead>
 										<tr>
 											<th><span>Name </span></th>
 											<th><span>Address </span></th>
-											<th class="text-center"><span>Rating</span></th>
+											<th className="text-center"><span>Rating</span></th>
 											<th><span>Above Area Avg</span></th>
 											<th><span>Open</span></th>
 											<th><span>Bookmark</span></th>
@@ -328,7 +328,7 @@ export default class Recommendations extends React.Component {
 										</tr>
 									</thead>
 									<tbody>
-										{this.state.recValues.length === 0 ? <tr> <td> No Results To Display </td> </tr> : this.renderRecsList(this.state.recValues)}
+										{this.state.recValues.length === 0 ?<tr><td>No Results To Display</td></tr> : this.renderRecsList(this.state.recValues)}
 									</tbody>
 								</table>
 							</div>

@@ -13,13 +13,15 @@ export default class Home extends React.Component {
 			// categoryList: []
 			selectedCity: "",
 			cities: [],
-			covidBanner: []
+			covidBanner: [],
+			cityNews: []
 		}
 
 		this.submitCity = this.submitCity.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.renderCovidBanner = this.renderCovidBanner.bind(this);
 		this.strReplace = this.strReplace.bind(this);
+		this.renderNews = this.renderNews.bind(this);
 	}
 
 	// React function that is called when the page load.
@@ -85,6 +87,51 @@ export default class Home extends React.Component {
 				})
 			})
 			.catch(err => console.log(err))	// Print the error if there is one.
+
+		console.log("try to query news");
+		// To query /v2/top-headlines
+		const q = this.state.selectedCity + " covid";
+		const apiKey = "6ff968d8d8ff4f908f43980bba2d884b";
+		const url = `https://newsapi.org/v2/everything?qInTitle=+${q}&apiKey=${apiKey}`;
+		const request = new Request(url);
+
+		// fetch news
+		fetch(request, {
+			method: 'GET',
+			// mode: 'no-cors'
+		})
+		.then(response => response.json())
+		.then((news) => {
+			if (news.totalResults = 0) {
+				return;
+			} else {
+				this.setState({
+					cityNews: news.articles
+				})
+				console.log(this.state.cityNews);
+			}
+		})
+		.catch(error => {
+			console.log(error);
+		});
+
+		
+
+		// // All options passed to topHeadlines are optional, but you need to include at least one of them
+		// newsapi.v2.topHeadlines({
+		// 	q: this.state.selectedCity + " covid",
+		// 	language: 'en',
+		// 	country: 'us',
+		// 	apiKey: '6122cdc0cb94499e9a2e46e982ebc5f1'
+		// }).then(response => {
+		// 	console.log(response);
+		// 	/*
+		// 	{
+		// 		status: "ok",
+		// 		articles: [...]
+		// 	}
+		// 	*/
+		// });
 	}
 
 	strReplace(input) {
@@ -107,6 +154,30 @@ export default class Home extends React.Component {
 			return (
 				<div>
 					<p> No offers to show</p>
+				</div>
+			)
+		}
+	}
+
+	renderNews = (resultList) => {
+		if (Array.isArray(resultList)) {
+			return (
+				resultList.map(((item, i, resultList) => (
+					<div class="custom-scrollbar-css p-2">
+						<p class="font-regular">
+							{item.title}
+						</p>
+						<a href={item.url}>{item.title}</a>
+						<p class="font-italic">
+							{item.description}
+						</p>
+					</div>
+				)))
+			)
+		} else {
+			return (
+				<div>
+					<p> No news to show</p>
 				</div>
 			)
 		}
@@ -151,9 +222,10 @@ export default class Home extends React.Component {
 									</div>
 								</div>
 							</div>
+
+							{this.renderNews(this.state.cityNews)}
 						</div>
 					}
-
 				</div>
 			</div >
 		);

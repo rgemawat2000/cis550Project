@@ -123,28 +123,6 @@ export default class Bookmark extends React.Component {
 									<h5 > {item.name}</h5>
 									<p> Address: {item.address + " " + item.city + " " + item.state}</p>
 									<p class="font-italic"> Rating: {item.stars}</p>
-									<div class="custom-scrollbar-css p-2">
-										<p class="font-regular">
-											Enter News Article Link or Headline here
-										</p>
-										<p class="font-italic">
-											Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, soluta, cupiditate.
-											Ad ab, delectus impedit similique voluptate fuga nemo iure, nobis dolorem dolor,
-											quia voluptas aperiam doloremque commodi id? In? Lorem ipsum dolor sit amet,
-											consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-											aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-											laboris nisi ut aliquip ex ea commodo consequat.
-											Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-											nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-											officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet,
-											consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-											labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-											ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-											reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-											Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-											anim id est laborum.
-										</p>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -154,7 +132,7 @@ export default class Bookmark extends React.Component {
 		} else {
 			return (
 				<div>
-					<p> No boomarked Businesses to show</p>
+					<p> No bookmarked Businesses to show</p>
 				</div>
 			)
 		}
