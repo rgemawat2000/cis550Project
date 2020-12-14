@@ -66,7 +66,7 @@ app.post('/addBookmark', routes.addBookmark);
 
 app.post('/removeBookmark', routes.removeBookmark);
 
-app.post('/tempTable', routes.tempTableCovidRating);
+app.get('/tempTable', routes.tempTableCovidRating);
 
 
 app.listen(8081, () => {

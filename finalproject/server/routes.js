@@ -68,6 +68,7 @@ function bestCategoriesPerCity(req, res) {
 
 
 function tempTableCovidRating(req, res) {
+  console.log("in temp table");
   var query = `     
   CREATE TEMPORARY TABLE citiesRating
   SELECT city, Sum(CASE When ReviewsNoText.Date 
@@ -87,6 +88,7 @@ function tempTableCovidRating(req, res) {
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
+      console.log("done making temp table");
       res.json(rows);
     }
   });
@@ -106,7 +108,7 @@ function preCovidRating(req, res) {
 // `;
 
   var query = `
-  SELECT city, (citiesRating.preSum / ccitiesRating.preCount)as output
+  SELECT city, (citiesRating.preSum / citiesRating.preCount)as output
   FROM citiesRating
   WHERE citiesRating.city = '${city}';
   `;
@@ -123,7 +125,7 @@ function preCovidRating(req, res) {
 function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT city, (citiesRating.midSum / ccitiesRating.midCount)as output
+  SELECT city, (citiesRating.midSum / citiesRating.midCount)as output
   FROM citiesRating
   WHERE citiesRating.city = '${city}';
   `;
@@ -534,5 +536,4 @@ module.exports = {
   addBookmark: addBookmark,
   removeBookmark: removeBookmark,
   tempTableCovidRating: tempTableCovidRating,
- 
 }
