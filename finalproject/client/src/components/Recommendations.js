@@ -21,6 +21,7 @@ export default class Recommendations extends React.Component {
 			sessionEmail: "",
 			sessionUsername: "",
 			disabledBtn: [],
+			error: ""
 		}
 
 		this.handlePostalChange = this.handlePostalChange.bind(this);
@@ -164,11 +165,18 @@ export default class Recommendations extends React.Component {
 	// }
 
 	submitInput() {
-		if (this.state.minRating === "") {
+		if (this.state.postalCode === "" || this.state.selectedCategory === "") {
 			this.setState({
-				minRating: "0"
-			})
+				error: "Please Input all Required Fields",
+				areaAverage: "",
+				recValues: []
+			});
+			return;
 		}
+		if (this.state.minRating === "") {
+			this.state.minRating = "0";
+		}
+
 		fetch(`http://localhost:8081/recommendations/${this.state.postalCode}/${this.state.selectedCategory}/${this.state.minRating}/${this.state.selectedDelivery}/${this.state.selectedService}/${this.state.sessionEmail}`, {
 			method: 'GET' // The type of HTTP request.
 		})
@@ -177,6 +185,7 @@ export default class Recommendations extends React.Component {
 				if (!recValuesList) return;
 				// console.log(recValuesList);
 				this.setState({
+					error: "",
 					recValues: recValuesList
 				})
 			})
@@ -192,6 +201,7 @@ export default class Recommendations extends React.Component {
 				);
 				//This saves our HTML representation of the data into the state, which we can call in our render function
 				this.setState({
+					error: "",
 					areaAverage: "Area's Average Rating: " + Math.round((ratingDivs[0] + Number.EPSILON) * 100) / 100
 				});
 			})
@@ -278,6 +288,7 @@ export default class Recommendations extends React.Component {
 							<input type="text" className="form-control" placeholder="Enter Postal Code" value={this.state.postalCode}
 								aria-label="Username" aria-describedby="basic-addon1" onChange={this.handlePostalChange} id="postalCode" />
 						</div>
+						<label class="required"></label>
 						<div className="col-sm-3">
 							<select className="form-control select2" value={this.state.selectedCategory}
 								onChange={this.handleCategoryChange} id="categoriesDropdown">
@@ -285,6 +296,7 @@ export default class Recommendations extends React.Component {
 									{this.state.categories}
 							</select>
 						</div>
+						<label class="required"></label>
 						<div className="col-sm-4">
 							<select className="form-control select2" value={this.state.selectedService} onChange={this.handleServiceChange} id="servicesDropdown">
 								<option select value> -- Virtual Services Offered ? -- </option>
@@ -292,18 +304,21 @@ export default class Recommendations extends React.Component {
 								<option value="No">No</option>
 							</select>
 						</div>
-
+						<label class="required"></label>
 					</div>
+
 					<div className="row">
 						<div className="col-sm-4">
 							<select className="form-control select2" value={this.state.selectedDelivery} onChange={this.handleDeliveryChange} id="deliveryDropdown">
-								<option select value> -- Delivery / Takeout Offered ?-- </option>
+								<option select value> -- Delivery / Takeout Offered ? -- </option>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
 							</select>
-						</ div>
+						</div>
+						<label class="required"></label>
+
 						<div className="col-sm-3">
-							<input type="text" className="form-control" placeholder="Enter Minimum Rating" value={this.state.minRating}
+							<input type="text" className="form-control" placeholder="Optional: Minimum Rating" value={this.state.minRating}
 								aria-label="Username" aria-describedby="basic-addon1" onChange={this.handleRatingChange} id="minRating" />
 						</div>
 						<div className="col-sm-3">
@@ -311,6 +326,7 @@ export default class Recommendations extends React.Component {
 						</div>
 					</div>
 
+					<div className="areaAvg red" id="error"> {this.state.error} </div>
 					<div className="areaAvg" id="area_average"> {this.state.areaAverage} </div>
 					<div className="row">
 						<div className="main-box no-header clearfix">

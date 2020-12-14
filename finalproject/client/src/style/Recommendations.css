@@ -93,3 +93,16 @@ text-decoration:none;
 .areaAvg {
   padding-left: 10px;
 }
+
+.areaAvg.red {
+  padding-left: 10px;
+  color:#B22222;
+  font-weight: bold;
+}
+
+.required:after { 
+  content:"*"; 
+  color:#B22222;
+  padding: 0px;
+  margin: 0px;
+}
