@@ -91,6 +91,10 @@ export default class Recommendations extends React.Component {
 		})
 			.then(res => res.json())
 			.then(user => {
+				if (JSON.parse(JSON.stringify(user)).status === 404) {
+					console.log("hello not valid in reccommendations");
+					window.location.assign("http://localhost:3000/");
+				}
 				console.log(user);
 				if (user.length > 0) {
 					console.log('Session Email: ' + user[0].email);

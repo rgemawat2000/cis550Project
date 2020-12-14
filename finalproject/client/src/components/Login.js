@@ -102,11 +102,19 @@ export default class Login extends React.Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form');
-            this.submitLogin();
+        if (this.state.email === "") {
+            let errors = this.state.errors;
+            errors.email = 'Email is empty';
+        } else if (this.state.password === "") {
+            let errors = this.state.errors;
+            errors.password = 'Password is empty';
         } else {
-            console.error('Invalid Form');
+            if (this.validateForm(this.state.errors)) {
+                console.info('Valid Form');
+                this.submitLogin();
+            } else {
+                console.error('Invalid Form');
+            }
         }
     }
 

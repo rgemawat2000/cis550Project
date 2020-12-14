@@ -72,11 +72,19 @@ export default class SignUp extends React.Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        if (this.validateForm(this.state.errors)) {
-            console.info('Valid Form');
-            this.submitSignUp();
+        if (this.state.email === "") {
+            let errors = this.state.errors;
+            errors.email = 'Email is empty';
+        } else if (this.state.password === "") {
+            let errors = this.state.errors;
+            errors.password = 'Password is empty';
         } else {
-            console.error('Invalid Form');
+            if (this.validateForm(this.state.errors)) {
+                console.info('Valid Form');
+                this.submitSignUp();
+            } else {
+                console.error('Invalid Form');
+            }
         }
     }
 
@@ -91,6 +99,7 @@ export default class SignUp extends React.Component {
     }
 
     submitSignUp() {
+
         console.log('in submitSignUp');
         var reqBody = {
             "email": this.state.email,
@@ -117,7 +126,7 @@ export default class SignUp extends React.Component {
                 } else if (msg === 206) {
                     // console.log("Email does not exist")
                     this.setState({ submission_errors: 'Email or username already in use' })
-                } 
+                }
             })
             .catch(err => console.log(err))
         this.setState({

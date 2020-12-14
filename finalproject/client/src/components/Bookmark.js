@@ -2,6 +2,8 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../style/Bookmark.css';
 import PageNavbar from './PageNavbar';
+import { Route, Link, Switch, Redirect } from 'react-router-dom';
+
 
 
 export default class Bookmark extends React.Component {
@@ -37,6 +39,10 @@ export default class Bookmark extends React.Component {
 		})
 			.then(res => res.json())
 			.then(user => {
+				if (JSON.parse(JSON.stringify(user)).status === 404) {
+					console.log("hello not valid in bookmark");
+					window.location.assign("http://localhost:3000/");
+				}
 				console.log(user);
 				if (user.length > 0) {
 					console.log('Session Email: ' + user[0].email);
@@ -62,6 +68,8 @@ export default class Bookmark extends React.Component {
 							})
 						})
 						.catch(err => console.log(err))
+				} else {
+					return <Redirect to="http://localhost:3000/" />;
 				}
 			})
 			.catch(err => console.log(err))

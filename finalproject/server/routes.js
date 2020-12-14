@@ -438,20 +438,27 @@ function covidBanner(req, res) {
 
 function getSessionUser(req, res) {
   console.log("Session Email: " + req.session.email);
-  var query = `SELECT email, username 
-  FROM USERS 
-  WHERE email = '${req.session.email.toLowerCase()}'
-  `
-  connection.query(query, function (error, rows, fields) {
-    if (error) {
-      res.send({
-        "status": 400,
-        "failed": "error ocurred"
-      })
-    } else {
-      res.json(rows);
-    }
-  });
+  if (req.session.email === undefined) {
+    res.send({
+      "status": 404,
+      "failed": "not authenticated"
+    })
+  } else {
+    var query = `SELECT email, username 
+    FROM USERS 
+    WHERE email = '${req.session.email.toLowerCase()}'
+    `
+    connection.query(query, function (error, rows, fields) {
+      if (error) {
+        res.send({
+          "status": 400,
+          "failed": "error ocurred"
+        })
+      } else {
+        res.json(rows);
+      }
+    });
+  }
 };
 
 function logout(req, res) {
