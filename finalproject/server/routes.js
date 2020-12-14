@@ -98,7 +98,7 @@ function preCovidRating(req, res) {
 // `;
 
   var query = `
-  SELECT city, (citiesRating.preSum / ccitiesRating.preCount)as output
+  SELECT city, (citiesRating.preSum / citiesRating.preCount)as output
   FROM citiesRating
   WHERE citiesRating.city = '${city}';
   `;
@@ -116,7 +116,7 @@ function preCovidRating(req, res) {
 function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT city, (citiesRating.midSum / ccitiesRating.midCount)as output
+  SELECT city, (citiesRating.midSum / citiesRating.midCount)as output
   FROM citiesRating
   WHERE citiesRating.city = '${city}';
   `;
