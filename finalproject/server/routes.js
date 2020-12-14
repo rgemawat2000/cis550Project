@@ -530,5 +530,6 @@ module.exports = {
   logout: logout,
   getSessionUser: getSessionUser,
   addBookmark: addBookmark,
-  removeBookmark: removeBookmark
+  removeBookmark: removeBookmark,
+  tempTablePreCovidRating: tempTablePreCovidRating
 }

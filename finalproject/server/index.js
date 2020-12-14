@@ -37,6 +37,8 @@ app.get('/bestCategories/:selectedCity', routes.bestCategoriesPerCity);
 
 app.get('/preCovidRating/:selectedCity', routes.preCovidRating);
 
+app.get('/tempTablePreCovidRating', routes.tempTablePreCovidRating);
+
 app.get('/midCovidRating/:selectedCity', routes.midCovidRating);
 
 app.get('/percentOpen/:selectedCity', routes.percentOpen);
