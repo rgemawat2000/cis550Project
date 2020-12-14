@@ -23,7 +23,6 @@ app.use(
 	})
 );
 
-
 app.get('/first10Categories', routes.testGetCategories);
 
 app.post('/validateLogin', routes.validateLogin);
@@ -37,7 +36,7 @@ app.get('/bestCategories/:selectedCity', routes.bestCategoriesPerCity);
 
 app.get('/preCovidRating/:selectedCity', routes.preCovidRating);
 
-app.get('/tempTablePreCovidRating', routes.tempTablePreCovidRating);
+app.get('/tempTableCovidRating', routes.tempTableCovidRating);
 
 app.get('/midCovidRating/:selectedCity', routes.midCovidRating);
 
@@ -68,7 +67,6 @@ app.post('/addBookmark', routes.addBookmark);
 app.post('/removeBookmark', routes.removeBookmark);
 
 app.post('/tempTable', routes.tempTableCovidRating);
-
 
 
 app.listen(8081, () => {

@@ -70,7 +70,15 @@ function bestCategoriesPerCity(req, res) {
 function tempTableCovidRating(req, res) {
   var query = `     
   CREATE TEMPORARY TABLE citiesRating
-  SELECT city, Sum(CASE When ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then ReviewsNoText.Stars Else 0 End) as preSum, Sum(CASE When ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then 1 Else 0 End) as preCount, Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then ReviewsNoText.Stars Else 0 End) as midSum, Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then 1 Else 0 End) as midCount
+  SELECT city, Sum(CASE When ReviewsNoText.Date 
+    < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
+    Then ReviewsNoText.Stars Else 0 End) as preSum, 
+    Sum(CASE When ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
+    Then 1 Else 0 End) as preCount, 
+    Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
+    Then ReviewsNoText.Stars Else 0 End) as midSum, 
+    Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
+    Then 1 Else 0 End) as midCount
   FROM ReviewsNoText 
   JOIN Businesses b ON b.ID = ReviewsNoText.BusinessID
   GROUP BY city;
@@ -98,7 +106,7 @@ function preCovidRating(req, res) {
 // `;
 
   var query = `
-  SELECT city, (citiesRating.preSum / citiesRating.preCount)as output
+  SELECT city, (citiesRating.preSum / ccitiesRating.preCount)as output
   FROM citiesRating
   WHERE citiesRating.city = '${city}';
   `;
@@ -112,11 +120,10 @@ function preCovidRating(req, res) {
 }
 
 
-
 function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT city, (citiesRating.midSum / citiesRating.midCount)as output
+  SELECT city, (citiesRating.midSum / ccitiesRating.midCount)as output
   FROM citiesRating
   WHERE citiesRating.city = '${city}';
   `;
