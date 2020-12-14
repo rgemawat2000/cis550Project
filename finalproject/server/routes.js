@@ -66,18 +66,43 @@ function bestCategoriesPerCity(req, res) {
   });
 }
 
+
+function tempTablePreCovidRating(req, res) {
+  var query = `     
+  CREATE TEMPORARY TABLE citiesPreCovid 
+  SELECT city, SUM(ReviewsNoText.Stars) as sum, COUNT(*) as count
+  FROM ReviewsNoText 
+  JOIN Businesses b ON b.ID = ReviewsNoText.BusinessID
+  WHERE ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i')
+  GROUP BY city;
+`;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
+}
+
 function preCovidRating(req, res) {
   var city = req.params.selectedCity;
-  var query = `
-  WITH a AS (
-    SELECT ID
-    FROM Businesses
-    WHERE City = '${city}')
+//   var query = `
+//   WITH a AS (
+//     SELECT ID
+//     FROM Businesses
+//     WHERE City = '${city}')
        
-    SELECT AVG(ReviewsNoText.Stars) as output
-      FROM ReviewsNoText
-      JOIN a ON a.ID = ReviewsNoText.BusinessID;
-`;
+//     SELECT AVG(ReviewsNoText.Stars) as output
+//       FROM ReviewsNoText
+//       JOIN a ON a.ID = ReviewsNoText.BusinessID;
+// `;
+
+  var query = `
+  SELECT city, (citiesPreCovid.sum / citiesPreCovid.count)as output
+  FROM citiesPreCovid
+  WHERE citiesPreCovid.city = '${city}';
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
