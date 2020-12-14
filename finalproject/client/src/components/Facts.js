@@ -25,10 +25,36 @@ export default class Facts extends React.Component {
 		this.submitCity = this.submitCity.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.renderList = this.renderList.bind(this);
+		this.getSessionUser = this.getSessionUser.bind(this);
+	}
+
+	getSessionUser() {
+		fetch("http://localhost:8081/getSessionUser", {
+			method: 'GET',
+			credentials: 'include'
+		})
+			.then(res => res.json())
+			.then(user => {
+				if (JSON.parse(JSON.stringify(user)).status === 404) {
+					console.log("hello not valid in reccommendations");
+					window.location.assign("http://localhost:3000/");
+				}
+				console.log(user);
+				if (user.length > 0) {
+					console.log('Session Email: ' + user[0].email);
+					console.log('Session username: ' + user[0].username);
+					this.setState({
+						sessionEmail: user[0].email,
+						sessionUsername: user[0].username
+					})
+				}
+			})
+			.catch(err => console.log(err))
 	}
 
 
 	componentDidMount() {
+		this.getSessionUser();
 		// Send an HTTP request to the server.
 		fetch("http://localhost:8081/cities", {
 			method: 'GET' // The type of HTTP request.
@@ -183,7 +209,7 @@ export default class Facts extends React.Component {
 						{resultList.map(((value, i) => (
 							<tr key={i}>
 								<td>
-									<span class="user-subhead">{value.genre}  </span>
+									<span className="user-subhead">{value.genre}  </span>
 								</td>
 								<td>
 									{value.avg_rating}
@@ -202,34 +228,34 @@ export default class Facts extends React.Component {
 			<div>
 				<PageNavbar active="facts" />
 
-				<div id="page-wrapper" class="container">
-					<div class="row">
-						<div class="col-lg-12">
+				<div id="page-wrapper" className="container">
+					<div className="row">
+						<div className="col-lg-12">
 							<h1>Facts</h1>
-							<div class="alert alert-info"> Select city to get relevant statistics </div>
+							<div className="alert alert-info"> Select city to get relevant statistics </div>
 						</div>
 					</div>
 
-					<div class="row">
+					<div className="row">
 						<div className="col-sm-3">
-							<select class="form-control select2" value={this.state.selectedCity} onChange={this.handleChange} id="decadesDropdown">
+							<select className="form-control select2" value={this.state.selectedCity} onChange={this.handleChange} id="decadesDropdown">
 								<option> -- Select a City -- </option>
 								{this.state.cities}
 							</select>
 						</div>
-						<div class="col-sm-6">
+						<div className="col-sm-6">
 							<button className="btn btn-danger" id="decadesSubmitBtn" onClick={this.submitCity}>Submit</button>
 						</div>
 					</div>
 
 
-					<div class="row">
-						<div class="col-lg-4">
-							<div class="card">
-								<div class="card-header">
+					<div className="row">
+						<div className="col-lg-4">
+							<div className="card">
+								<div className="card-header">
 									Top 10 Rated Business Categories
   								</div>
-								<div class="card-body">
+								<div className="card-body">
 									<div className="movies-container" id="results">
 										<table> <tbody>
 											{this.state.categories}
@@ -239,12 +265,12 @@ export default class Facts extends React.Component {
 							</div>
 						</div>
 
-						<div class="col-lg-4">
-							<div class="card">
-								<div class="card-header">
+						<div className="col-lg-4">
+							<div className="card">
+								<div className="card-header">
 									Overall Businesses Stats
   								</div>
-								<div class="card-body">
+								<div className="card-body">
 									<table>
 										<tbody>
 											<tr>
@@ -277,12 +303,12 @@ export default class Facts extends React.Component {
 							</div>
 						</div>
 
-						<div class="col-lg-4">
-							<div class="card">
-								<div class="card-header">
+						<div className="col-lg-4">
+							<div className="card">
+								<div className="card-header">
 									Average Ratings
   								</div>
-								<div class="card-body">
+								<div className="card-body">
 									<table>
 										<tbody>
 											<tr >

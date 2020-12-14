@@ -7,7 +7,7 @@ export default class SingleOutputRow extends React.Component {
 		return (
 			<tr>
 				<td className="tRow">
-					<span class="user-subhead">{this.props.BusinessName}  </span>
+					<span className="user-subhead">{this.props.BusinessName}  </span>
 				</td>
 				<td className="tRow">
 					{this.props.output}

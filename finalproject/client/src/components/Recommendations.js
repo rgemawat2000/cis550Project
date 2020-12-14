@@ -143,31 +143,6 @@ export default class Recommendations extends React.Component {
 			.catch(err => console.log(err))
 	}
 
-	// removeBookmark(businessID) {
-	// 	var reqBody = {
-	// 		"userEmail": this.state.sessionEmail,
-	// 		"businessID": businessID,
-	// 	}
-	// 	console.log('in removeBookmark' + reqBody);
-	// 	const requestOptions = {
-	// 		method: 'POST',
-	// 		headers: { 'Content-Type': 'application/json' },
-	// 		body: JSON.stringify(reqBody),
-	// 		credentials: 'include'
-	// 	};
-	// 	fetch("http://localhost:8081/removeBookmark", requestOptions)
-	// 		.then(res => res.json())
-	// 		.then((code) => {
-	// 			var msg = JSON.parse(JSON.stringify(code)).status;
-	// 			if (msg === 200) {
-	// 				console.log("removed bookmark");
-	// 			} else if (msg === 400) {
-	// 				console.log("error in remove bookmark");
-	// 			}
-	// 		})
-	// 		.catch(err => console.log(err))
-	// }
-
 	submitInput() {
 		if (this.state.postalCode === "" || this.state.selectedCategory === "") {
 			this.setState({
@@ -178,7 +153,9 @@ export default class Recommendations extends React.Component {
 			return;
 		}
 		if (this.state.minRating === "") {
-			this.state.minRating = "0";
+			this.setState({
+				minRating: "0"
+			})
 		}
 
 		fetch(`http://localhost:8081/recommendations/${this.state.postalCode}/${this.state.selectedCategory}/${this.state.minRating}/${this.state.selectedDelivery}/${this.state.selectedService}/${this.state.sessionEmail}`, {
@@ -218,7 +195,7 @@ export default class Recommendations extends React.Component {
 				resultList.map(((value, i) => (
 					<tr key={i}>
 						<td>
-							<span class="user-subhead">{value.name}  </span>
+							<span className="user-subhead">{value.name}  </span>
 						</td>
 						<td>
 							{value.address}
@@ -229,10 +206,10 @@ export default class Recommendations extends React.Component {
 						<td>
 							<div align="center">
 								{value.abv_avg === 'Yes' ?
-									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-check-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
 										<path fillRule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
 									</svg> :
-									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="orangered" xmlns="http://www.w3.org/2000/svg">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-x-square-fill" fill="orangered" xmlns="http://www.w3.org/2000/svg">
 										<path fillRule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
 									</svg>
 								}
@@ -241,10 +218,10 @@ export default class Recommendations extends React.Component {
 						<td>
 							<div align="center">
 								{value.open === 1 ?
-									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-check-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
 										<path fillRule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
 									</svg> :
-									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="orangered" xmlns="http://www.w3.org/2000/svg">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-x-square-fill" fill="orangered" xmlns="http://www.w3.org/2000/svg">
 										<path fillRule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z" />
 									</svg>}
 							</div>
@@ -256,7 +233,7 @@ export default class Recommendations extends React.Component {
 										onClick={() => this.addBookmark(value.ID)}>Add</button>
 									:
 
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="sandybrown" class="bi bi-star-fill" viewBox="0 0 16 16">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="sandybrown" className="bi bi-star-fill" viewBox="0 0 16 16">
 										<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
 									</svg>
 								}
@@ -292,7 +269,7 @@ export default class Recommendations extends React.Component {
 							<input type="text" className="form-control" placeholder="Enter Postal Code" value={this.state.postalCode}
 								aria-label="Username" aria-describedby="basic-addon1" onChange={this.handlePostalChange} id="postalCode" />
 						</div>
-						<label class="required"></label>
+						<label className="required"></label>
 						<div className="col-sm-3">
 							<select className="form-control select2" value={this.state.selectedCategory}
 								onChange={this.handleCategoryChange} id="categoriesDropdown">
@@ -300,7 +277,7 @@ export default class Recommendations extends React.Component {
 									{this.state.categories}
 							</select>
 						</div>
-						<label class="required"></label>
+						<label className="required"></label>
 						<div className="col-sm-4">
 							<select className="form-control select2" value={this.state.selectedService} onChange={this.handleServiceChange} id="servicesDropdown">
 								<option select value> -- Virtual Services Offered ? -- </option>
@@ -308,7 +285,7 @@ export default class Recommendations extends React.Component {
 								<option value="No">No</option>
 							</select>
 						</div>
-						<label class="required"></label>
+						<label className="required"></label>
 					</div>
 
 					<div className="row">
@@ -319,7 +296,7 @@ export default class Recommendations extends React.Component {
 								<option value="No">No</option>
 							</select>
 						</div>
-						<label class="required"></label>
+						<label className="required"></label>
 
 						<div className="col-sm-3">
 							<input type="text" className="form-control" placeholder="Optional: Minimum Rating" value={this.state.minRating}

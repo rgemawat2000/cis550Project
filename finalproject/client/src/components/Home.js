@@ -22,30 +22,37 @@ export default class Home extends React.Component {
 		this.renderCovidBanner = this.renderCovidBanner.bind(this);
 		this.strReplace = this.strReplace.bind(this);
 		this.renderNews = this.renderNews.bind(this);
+		this.getSessionUser = this.getSessionUser.bind(this);
 	}
+
+	getSessionUser() {
+		fetch("http://localhost:8081/getSessionUser", {
+			method: 'GET',
+			credentials: 'include'
+		})
+			.then(res => res.json())
+			.then(user => {
+				if (JSON.parse(JSON.stringify(user)).status === 404) {
+					console.log("hello not valid in reccommendations");
+					window.location.assign("http://localhost:3000/");
+				}
+				console.log(user);
+				if (user.length > 0) {
+					console.log('Session Email: ' + user[0].email);
+					console.log('Session username: ' + user[0].username);
+					this.setState({
+						sessionEmail: user[0].email,
+						sessionUsername: user[0].username
+					})
+				}
+			})
+			.catch(err => console.log(err))
+	}
+
 
 	// React function that is called when the page load.
 	componentDidMount() {
-		// fetch("http://localhost:8081/covidBanner/", {
-		// 	method: 'GET' // The type of HTTP request.
-		// })
-		// 	.then(res => res.json()) // Convert the response data to a JSON.
-		// 	.then(covidBannerList => {
-		// 		if (!covidBannerList) return;
-		// 		// Map each covidBannerObj in covidBannerDivs to an HTML element:
-		// 		let covidBannerDivs = covidBannerList.map((covidBannerObj, i) =>
-		// 			<SingleOutputRow output={covidBannerObj.output} />
-		// 		);
-
-		// 		this.setState({
-		// 			covidBanner: covidBannerDivs
-		// 		})
-		// 	})
-		// 	.catch(err => console.log(err))	// Print the error if there is one.
-
-		var msg = "aaa+";
-		msg = msg.replace("+", ",");
-		console.log(msg);
+		this.getSessionUser();
 		// Send an HTTP request to the server.
 		fetch("http://localhost:8081/cities", {
 			method: 'GET' // The type of HTTP request.
@@ -62,8 +69,6 @@ export default class Home extends React.Component {
 				})
 			})
 			.catch(err => console.log(err))	// Print the error if there is one.
-
-
 	}
 
 	handleChange(e) {
@@ -92,7 +97,7 @@ export default class Home extends React.Component {
 		// To query /v2/top-headlines
 		const q = this.state.selectedCity + " covid";
 		const apiKey = "6ff968d8d8ff4f908f43980bba2d884b";
-		const url = `https://newsapi.org/v2/everything?qInTitle=+${q}&apiKey=${apiKey}&sortBy=popularity`;
+		const url = `https://newsapi.org/v2/everything?qInTitle=+${q}&apiKey=${apiKey}&sortBy=popularity&pageSize=10`;
 		const request = new Request(url);
 
 		// fetch news
@@ -100,22 +105,21 @@ export default class Home extends React.Component {
 			method: 'GET',
 			// mode: 'no-cors'
 		})
-		.then(response => response.json())
-		.then((news) => {
-			if (news.totalResults = 0) {
-				return;
-			} else {
-				this.setState({
-					cityNews: news.articles
-				})
-				console.log(this.state.cityNews);
-			}
-		})
-		.catch(error => {
-			console.log(error);
-		});
+			.then(response => response.json())
+			.then((news) => {
+				if (news.totalResults === 0) {
+					return;
+				} else {
+					this.setState({
+						cityNews: news.articles
+					})
+					console.log(this.state.cityNews);
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
 
-		
 
 		// // All options passed to topHeadlines are optional, but you need to include at least one of them
 		// newsapi.v2.topHeadlines({
@@ -160,21 +164,20 @@ export default class Home extends React.Component {
 	}
 
 	renderNews(newsList) {
-		if (Array.isArray(newsList) && newsList.length != 0) {
+		if (Array.isArray(newsList) && newsList.length !== 0) {
 			return (
 				newsList.map(((item, i) => (
-					<div class="row" key={i}>
-						<div class="col-lg-8 mx-auto">
-							<div class="card mb-4">
-								<div class="card-header">
-									<div class='row'>
-										<div class="col-name">
+					<div className="row" key={i}>
+						<div className="col-lg-8 mx-auto">
+							<div className="card mb-4">
+								<div className="card-header">
+									<div className='row'>
+										<div className="col-name">
 											<h4><a href={item.url} target="_blank">{item.title}</a></h4>
-											
 										</div>
 									</div>
 								</div>
-								<div class="card-body p-3">
+								<div className="card-body p-3">
 									<h5 > {item.description}</h5>
 									<p>{item.content}</p>
 									<p> Author: <i>{item.author}</i>  Source: <i>{item.source.name}</i></p>
@@ -237,12 +240,12 @@ export default class Home extends React.Component {
 							<div className="row">
 								<div className="col-md-12">
 									<div className="card">
-										<h3>News from {this.state.selectedCity}</h3>
+										<h3 className="card-title" padding="15px">News from {this.state.selectedCity}</h3>
 										{this.renderNews(this.state.cityNews)}
 									</div>
 								</div>
 							</div>
-						</div>	
+						</div>
 					}
 				</div>
 			</div >

@@ -7,7 +7,7 @@ export default class BestGenreRow extends React.Component {
 		return (
 			<tr>
 				<td>
-					<span class="user-subhead">{this.props.genre}  </span>
+					<span className="user-subhead">{this.props.genre}  </span>
 				</td>
 				<td>
 					{this.props.avg_rating}

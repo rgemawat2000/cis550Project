@@ -2,9 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../style/Bookmark.css';
 import PageNavbar from './PageNavbar';
-import { Route, Link, Switch, Redirect } from 'react-router-dom';
-
-
+import { Redirect } from 'react-router-dom';
 
 export default class Bookmark extends React.Component {
 	constructor(props) {
