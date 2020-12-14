@@ -278,7 +278,6 @@ async function validateLogin(req, res) {
 }
 
 function getRecs(req, res) {
-  console.log(req);
   var inputPC = req.params.postalCode;
   var inputCategory = req.params.category;
   var inputRating = req.params.minRating;

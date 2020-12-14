@@ -13,13 +13,15 @@ export default class Home extends React.Component {
 			// categoryList: []
 			selectedCity: "",
 			cities: [],
-			covidBanner: []
+			covidBanner: [],
+			cityNews: []
 		}
 
 		this.submitCity = this.submitCity.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.renderCovidBanner = this.renderCovidBanner.bind(this);
 		this.strReplace = this.strReplace.bind(this);
+		this.renderNews = this.renderNews.bind(this);
 	}
 
 	// React function that is called when the page load.
@@ -85,6 +87,51 @@ export default class Home extends React.Component {
 				})
 			})
 			.catch(err => console.log(err))	// Print the error if there is one.
+
+		console.log("try to query news");
+		// To query /v2/top-headlines
+		const q = this.state.selectedCity + " covid";
+		const apiKey = "6ff968d8d8ff4f908f43980bba2d884b";
+		const url = `https://newsapi.org/v2/everything?qInTitle=+${q}&apiKey=${apiKey}&sortBy=popularity`;
+		const request = new Request(url);
+
+		// fetch news
+		fetch(request, {
+			method: 'GET',
+			// mode: 'no-cors'
+		})
+		.then(response => response.json())
+		.then((news) => {
+			if (news.totalResults = 0) {
+				return;
+			} else {
+				this.setState({
+					cityNews: news.articles
+				})
+				console.log(this.state.cityNews);
+			}
+		})
+		.catch(error => {
+			console.log(error);
+		});
+
+		
+
+		// // All options passed to topHeadlines are optional, but you need to include at least one of them
+		// newsapi.v2.topHeadlines({
+		// 	q: this.state.selectedCity + " covid",
+		// 	language: 'en',
+		// 	country: 'us',
+		// 	apiKey: '6122cdc0cb94499e9a2e46e982ebc5f1'
+		// }).then(response => {
+		// 	console.log(response);
+		// 	/*
+		// 	{
+		// 		status: "ok",
+		// 		articles: [...]
+		// 	}
+		// 	*/
+		// });
 	}
 
 	strReplace(input) {
@@ -107,6 +154,40 @@ export default class Home extends React.Component {
 			return (
 				<div>
 					<p> No offers to show</p>
+				</div>
+			)
+		}
+	}
+
+	renderNews(newsList) {
+		if (Array.isArray(newsList) && newsList.length != 0) {
+			return (
+				newsList.map(((item, i) => (
+					<div class="row" key={i}>
+						<div class="col-lg-8 mx-auto">
+							<div class="card mb-4">
+								<div class="card-header">
+									<div class='row'>
+										<div class="col-name">
+											<h4><a href={item.url} target="_blank">{item.title}</a></h4>
+											
+										</div>
+									</div>
+								</div>
+								<div class="card-body p-3">
+									<h5 > {item.description}</h5>
+									<p>{item.content}</p>
+									<p> Author: <i>{item.author}</i>  Source: <i>{item.source.name}</i></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				)))
+			)
+		} else {
+			return (
+				<div>
+					<p> No news to show</p>
 				</div>
 			)
 		}
@@ -138,22 +219,31 @@ export default class Home extends React.Component {
 					</div>
 
 					{this.state.covidBanner.length === 0 ? <span /> :
-						<div className="row">
-							<div className="col-md-12">
-								<div className="card">
-									<div className="card-body">
-										<h3 className="card-title">Covid Banners</h3>
-										<div id="content">
-											<ul className="timeline">
-												{this.renderCovidBanner(this.state.covidBanner)}
-											</ul>
+						<div>
+							<div className="row">
+								<div className="col-md-12">
+									<div className="card">
+										<div className="card-body">
+											<h3 className="card-title">Covid Banners</h3>
+											<div id="content">
+												<ul className="timeline">
+													{this.renderCovidBanner(this.state.covidBanner)}
+												</ul>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+							<div className="row">
+								<div className="col-md-12">
+									<div className="card">
+										<h3>News from {this.state.selectedCity}</h3>
+										{this.renderNews(this.state.cityNews)}
+									</div>
+								</div>
+							</div>
+						</div>	
 					}
-
 				</div>
 			</div >
 		);

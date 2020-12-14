@@ -21,6 +21,7 @@ export default class Recommendations extends React.Component {
 			sessionEmail: "",
 			sessionUsername: "",
 			disabledBtn: [],
+			error: ""
 		}
 
 		this.handlePostalChange = this.handlePostalChange.bind(this);
@@ -168,11 +169,18 @@ export default class Recommendations extends React.Component {
 	// }
 
 	submitInput() {
-		if (this.state.minRating === "") {
+		if (this.state.postalCode === "" || this.state.selectedCategory === "") {
 			this.setState({
-				minRating: "0"
-			})
+				error: "Please Input all Required Fields",
+				areaAverage: "",
+				recValues: []
+			});
+			return;
 		}
+		if (this.state.minRating === "") {
+			this.state.minRating = "0";
+		}
+
 		fetch(`http://localhost:8081/recommendations/${this.state.postalCode}/${this.state.selectedCategory}/${this.state.minRating}/${this.state.selectedDelivery}/${this.state.selectedService}/${this.state.sessionEmail}`, {
 			method: 'GET' // The type of HTTP request.
 		})
@@ -181,6 +189,7 @@ export default class Recommendations extends React.Component {
 				if (!recValuesList) return;
 				// console.log(recValuesList);
 				this.setState({
+					error: "",
 					recValues: recValuesList
 				})
 			})
@@ -196,6 +205,7 @@ export default class Recommendations extends React.Component {
 				);
 				//This saves our HTML representation of the data into the state, which we can call in our render function
 				this.setState({
+					error: "",
 					areaAverage: "Area's Average Rating: " + Math.round((ratingDivs[0] + Number.EPSILON) * 100) / 100
 				});
 			})
@@ -269,62 +279,68 @@ export default class Recommendations extends React.Component {
 			<div className="Recommendations">
 				<PageNavbar active="recommendations" />
 
-				<div id="page-wrapper" class="container">
-					<div class="row">
-						<div class="col-lg-12">
+				<div id="page-wrapper" className="container">
+					<div className="row">
+						<div className="col-lg-12">
 							<h1>Recommendations</h1>
-							<div class="alert alert-info"> Select options to get recommendations </div>
+							<div className="alert alert-info"> Select options to get recommendations </div>
 						</div>
 					</div>
 
-					<div class="row">
+					<div className="row">
 						<div className="col-sm-2">
-							<input type="text" class="form-control" placeholder="Enter Postal Code" value={this.state.postalCode}
+							<input type="text" className="form-control" placeholder="Enter Postal Code" value={this.state.postalCode}
 								aria-label="Username" aria-describedby="basic-addon1" onChange={this.handlePostalChange} id="postalCode" />
 						</div>
+						<label class="required"></label>
 						<div className="col-sm-3">
-							<select class="form-control select2" value={this.state.selectedCategory}
+							<select className="form-control select2" value={this.state.selectedCategory}
 								onChange={this.handleCategoryChange} id="categoriesDropdown">
-								<option select value> -- Select a Category -- </option>
-								{this.state.categories}
+									<option> -- Select a Category -- </option>
+									{this.state.categories}
 							</select>
 						</div>
+						<label class="required"></label>
 						<div className="col-sm-4">
-							<select class="form-control select2" value={this.state.selectedService} onChange={this.handleServiceChange} id="servicesDropdown">
+							<select className="form-control select2" value={this.state.selectedService} onChange={this.handleServiceChange} id="servicesDropdown">
 								<option select value> -- Virtual Services Offered ? -- </option>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
 							</select>
 						</div>
-
+						<label class="required"></label>
 					</div>
-					<div class="row">
+
+					<div className="row">
 						<div className="col-sm-4">
-							<select class="form-control select2" value={this.state.selectedDelivery} onChange={this.handleDeliveryChange} id="deliveryDropdown">
-								<option select value> -- Delivery / Takeout Offered ?-- </option>
+							<select className="form-control select2" value={this.state.selectedDelivery} onChange={this.handleDeliveryChange} id="deliveryDropdown">
+								<option select value> -- Delivery / Takeout Offered ? -- </option>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
 							</select>
-						</ div>
-						<div class="col-sm-3">
-							<input type="text" class="form-control" placeholder="Enter Minimum Rating" value={this.state.minRating}
+						</div>
+						<label class="required"></label>
+
+						<div className="col-sm-3">
+							<input type="text" className="form-control" placeholder="Optional: Minimum Rating" value={this.state.minRating}
 								aria-label="Username" aria-describedby="basic-addon1" onChange={this.handleRatingChange} id="minRating" />
 						</div>
-						<div class="col-sm-3">
+						<div className="col-sm-3">
 							<button className="btn btn-danger" id="submitInputBtn" onClick={this.submitInput}>Submit</button>
 						</div>
 					</div>
 
+					<div className="areaAvg red" id="error"> {this.state.error} </div>
 					<div className="areaAvg" id="area_average"> {this.state.areaAverage} </div>
-					<div class="row">
-						<div class="main-box no-header clearfix">
-							<div class="main-box-body clearfix">
-								<table class="table user-list">
+					<div className="row">
+						<div className="main-box no-header clearfix">
+							<div className="main-box-body clearfix">
+								<table className="table user-list">
 									<thead>
 										<tr>
 											<th><span>Name </span></th>
 											<th><span>Address </span></th>
-											<th class="text-center"><span>Rating</span></th>
+											<th className="text-center"><span>Rating</span></th>
 											<th><span>Above Area Avg</span></th>
 											<th><span>Open</span></th>
 											<th><span>Bookmark</span></th>
@@ -332,7 +348,7 @@ export default class Recommendations extends React.Component {
 										</tr>
 									</thead>
 									<tbody>
-										{this.state.recValues.length === 0 ? <tr> <td> No Results To Display </td> </tr> : this.renderRecsList(this.state.recValues)}
+										{this.state.recValues.length === 0 ?<tr><td>No Results To Display</td></tr> : this.renderRecsList(this.state.recValues)}
 									</tbody>
 								</table>
 							</div>
