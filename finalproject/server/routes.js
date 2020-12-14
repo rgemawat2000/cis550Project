@@ -67,13 +67,12 @@ function bestCategoriesPerCity(req, res) {
 }
 
 
-function tempTablePreCovidRating(req, res) {
+function tempTableCovidRating(req, res) {
   var query = `     
-  CREATE TEMPORARY TABLE citiesPreCovid 
-  SELECT city, SUM(ReviewsNoText.Stars) as sum, COUNT(*) as count
+  CREATE TEMPORARY TABLE citiesRating
+  SELECT city, Sum(CASE When ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then ReviewsNoText.Stars Else 0 End) as preSum, Sum(CASE When ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then 1 Else 0 End) as preCount, Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then ReviewsNoText.Stars Else 0 End) as midSum, Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') Then 1 Else 0 End) as midCount
   FROM ReviewsNoText 
   JOIN Businesses b ON b.ID = ReviewsNoText.BusinessID
-  WHERE ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i')
   GROUP BY city;
 `;
 
@@ -99,9 +98,9 @@ function preCovidRating(req, res) {
 // `;
 
   var query = `
-  SELECT city, (citiesPreCovid.sum / citiesPreCovid.count)as output
-  FROM citiesPreCovid
-  WHERE citiesPreCovid.city = '${city}';
+  SELECT city, (citiesRating.preSum / ccitiesRating.preCount)as output
+  FROM citiesRating
+  WHERE citiesRating.city = '${city}';
   `;
 
   connection.query(query, function (err, rows, fields) {
@@ -112,19 +111,15 @@ function preCovidRating(req, res) {
   });
 }
 
+
+
 function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  WITH a AS (
-    SELECT ID
-    FROM Businesses
-    WHERE City = '${city}')
-       
-    SELECT AVG(ReviewsNoText.Stars) as output
-      FROM ReviewsNoText
-      JOIN a ON a.ID = ReviewsNoText.BusinessID
-      WHERE ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i');
-`;
+  SELECT city, (citiesRating.midSum / ccitiesRating.midCount)as output
+  FROM citiesRating
+  WHERE citiesRating.city = '${city}';
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -531,5 +526,6 @@ module.exports = {
   getSessionUser: getSessionUser,
   addBookmark: addBookmark,
   removeBookmark: removeBookmark,
-  tempTablePreCovidRating: tempTablePreCovidRating
+  tempTableCovidRating: tempTableCovidRating,
+ 
 }

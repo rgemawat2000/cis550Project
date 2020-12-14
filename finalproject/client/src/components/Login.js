@@ -75,6 +75,9 @@ export default class Login extends React.Component {
 
     // React function that is called when the page load.
     componentDidMount() {
+        fetch("http://localhost:8081/tempTable", {
+			method: 'GET' // The type of HTTP request.
+		})
     }
 
     handleChange = (event) => {
