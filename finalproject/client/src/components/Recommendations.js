@@ -144,7 +144,7 @@ export default class Recommendations extends React.Component {
 	}
 
 	submitInput() {
-		if (this.state.postalCode === "" || this.state.selectedCategory === "") {
+		if (this.state.postalCode === "" || this.state.selectedCategory === "" || this.state.selectedDelivery === "" || this.state.selectedService === "") {
 			this.setState({
 				error: "Please Input all Required Fields",
 				areaAverage: "",
