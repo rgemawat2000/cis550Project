@@ -199,6 +199,26 @@ function getCities(req, res) {
   });
 }
 
+function getHomeCities(req, res) {
+  var query = `
+  WITH b AS (SELECT City, count(*) as num
+  FROM Businesses
+  GROUP BY City)
+  
+  SELECT DISTINCT City
+  FROM b
+  WHERE num > 100
+  ORDER BY City
+  `;
+
+  connection.query(query, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      res.json(rows);
+    }
+  });
+}
+
 async function addNewUser(req, res) {
   const password = req.body.password;
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
@@ -519,6 +539,7 @@ module.exports = {
   validateLogin: validateLogin,
   getCategoriesByCity: getCategoriesByCity,
   getCities: getCities,
+  getHomeCities: getHomeCities,
   bestCategoriesPerCity: bestCategoriesPerCity,
   preCovidRating: preCovidRating,
   midCovidRating: midCovidRating,

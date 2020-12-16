@@ -50,7 +50,7 @@ export default class Home extends React.Component {
 	componentDidMount() {
 		this.getSessionUser();
 		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/cities", {
+		fetch("http://localhost:8081/homecities", {
 			method: 'GET' // The type of HTTP request.
 		})
 			.then(res => res.json()) // Convert the response data to a JSON.
@@ -90,7 +90,7 @@ export default class Home extends React.Component {
 
 		// To query /v2/top-headlines
 		const q = this.state.selectedCity + " covid";
-		const apiKey = "6ff968d8d8ff4f908f43980bba2d884b";
+		const apiKey = "6122cdc0cb94499e9a2e46e982ebc5f1";
 		const url = `https://newsapi.org/v2/everything?qInTitle=+${q}&apiKey=${apiKey}&sortBy=popularity&pageSize=10`;
 		const request = new Request(url);
 

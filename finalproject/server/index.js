@@ -32,6 +32,8 @@ app.post('/register', routes.addNewUser);
 //app.get('/topCategories/:city', routes.getCategoriesByCity);
 app.get('/cities', routes.getCities);
 
+app.get('/homecities', routes.getHomeCities);
+
 app.get('/bestCategories/:selectedCity', routes.bestCategoriesPerCity);
 
 app.get('/preCovidRating/:selectedCity', routes.preCovidRating);
