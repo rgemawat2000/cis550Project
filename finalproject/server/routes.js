@@ -66,14 +66,7 @@ function bestCategoriesPerCity(req, res) {
 
 function tempTableCovidRating(req, res) {
   console.log("in temp table");
-  var query1 = `  
-  DROP TABLE IF EXISTS citiesSum;
-  `;
-  connection.query(query1, function (err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      console.log("in temp table done with drop");
-      var query2 = `  
+  var query2 = `  
       CREATE TABLE IF NOT EXISTS citiesSum ENGINE=MEMORY
       SELECT city, Sum(CASE When ReviewsNoText.year < 2019 
        Then ReviewsNoText.Stars Else 0 End) as preSum, 
@@ -87,13 +80,11 @@ function tempTableCovidRating(req, res) {
        JOIN Businesses ON Businesses.ID = ReviewsNoText.BusinessID 
        GROUP BY city;
       `;
-      connection.query(query2, function (err, rows, fields) {
-        if (err) console.log(err);
-        else {
-          console.log("done making temp table");
-          res.json(rows);
-        }
-      });
+  connection.query(query2, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log("done making temp table");
+      res.json(rows);
     }
   });
 }
