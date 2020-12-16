@@ -96,10 +96,7 @@ export default class Recommendations extends React.Component {
 					console.log("hello not valid in reccommendations");
 					window.location.assign("http://localhost:3000/");
 				}
-				console.log(user);
 				if (user.length > 0) {
-					console.log('Session Email: ' + user[0].email);
-					console.log('Session username: ' + user[0].username);
 					this.setState({
 						sessionEmail: user[0].email,
 						sessionUsername: user[0].username
@@ -114,7 +111,6 @@ export default class Recommendations extends React.Component {
 			"userEmail": this.state.sessionEmail,
 			"businessID": businessID,
 		}
-		console.log('in addBookmark' + reqBody);
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -126,7 +122,6 @@ export default class Recommendations extends React.Component {
 			.then((code) => {
 				var msg = JSON.parse(JSON.stringify(code)).status;
 				if (msg === 200) {
-					console.log("added bookmark");
 					debugger
 					var index = this.state.recValues.findIndex(item => {
 						return item.ID === businessID
@@ -321,7 +316,6 @@ export default class Recommendations extends React.Component {
 											<th><span>Above Area Avg</span></th>
 											<th><span>Open</span></th>
 											<th><span>Bookmark</span></th>
-											{/* <th>&nbsp;</th> */}
 										</tr>
 									</thead>
 									<tbody>

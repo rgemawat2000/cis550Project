@@ -33,13 +33,9 @@ export default class Home extends React.Component {
 			.then(res => res.json())
 			.then(user => {
 				if (JSON.parse(JSON.stringify(user)).status === 404) {
-					console.log("hello not valid in reccommendations");
 					window.location.assign("http://localhost:3000/");
 				}
-				console.log(user);
 				if (user.length > 0) {
-					console.log('Session Email: ' + user[0].email);
-					console.log('Session username: ' + user[0].username);
 					this.setState({
 						sessionEmail: user[0].email,
 						sessionUsername: user[0].username
@@ -85,7 +81,6 @@ export default class Home extends React.Component {
 			.then(res => res.json()) // Convert the response data to a JSON.
 			.then(covidBannerList => {
 				if (!covidBannerList) return;
-				// console.log(covidBannerList);
 				// // Map each covidBannerObj in covidBannerList to an HTML element:
 				this.setState({
 					covidBanner: covidBannerList
@@ -93,7 +88,6 @@ export default class Home extends React.Component {
 			})
 			.catch(err => console.log(err))	// Print the error if there is one.
 
-		console.log("try to query news");
 		// To query /v2/top-headlines
 		const q = this.state.selectedCity + " covid";
 		const apiKey = "6ff968d8d8ff4f908f43980bba2d884b";
@@ -113,34 +107,16 @@ export default class Home extends React.Component {
 					this.setState({
 						cityNews: news.articles
 					})
-					console.log(this.state.cityNews);
+					// console.log(this.state.cityNews);
 				}
 			})
 			.catch(error => {
 				console.log(error);
 			});
-
-
-		// // All options passed to topHeadlines are optional, but you need to include at least one of them
-		// newsapi.v2.topHeadlines({
-		// 	q: this.state.selectedCity + " covid",
-		// 	language: 'en',
-		// 	country: 'us',
-		// 	apiKey: '6122cdc0cb94499e9a2e46e982ebc5f1'
-		// }).then(response => {
-		// 	console.log(response);
-		// 	/*
-		// 	{
-		// 		status: "ok",
-		// 		articles: [...]
-		// 	}
-		// 	*/
-		// });
 	}
 
 	strReplace(input) {
 		var s = input.replace("+", ",");
-		console.log(s);
 		return s;
 	}
 

@@ -53,7 +53,6 @@ export default class SignUp extends React.Component {
             RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
         event.preventDefault();
         const { name, value } = event.target;
-        console.log(value);
         let errors = this.state.errors;
         switch (name) {
             case 'email':
@@ -135,7 +134,6 @@ export default class SignUp extends React.Component {
         });
     }
 
-
     render() {
         const { errors } = this.state;
         const { submission_errors } = this.state;
@@ -167,7 +165,6 @@ export default class SignUp extends React.Component {
                 <div className='info'>
                     <small>Password must be at least six characters in length.</small>
                 </div>
-                {/* <button type="submit" className="btn btn-info btn-block">Sign Up</button> */}
                 <button type="submit" className="btn btn-info btn-block">Submit</button>
                 <span className='error'>{submission_errors}</span>
                 <p className="forgot-password text-right">

@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../style/Facts.css';
 import PageNavbar from './PageNavbar';
 import SingleOutputRow from './SingleOutputRow';
-import BestGenreRow from './BestGenreRow';
+import RatingRow from './RatingRow';
 
 
 export default class Facts extends React.Component {
@@ -36,13 +36,9 @@ export default class Facts extends React.Component {
 			.then(res => res.json())
 			.then(user => {
 				if (JSON.parse(JSON.stringify(user)).status === 404) {
-					console.log("hello not valid in reccommendations");
 					window.location.assign("http://localhost:3000/");
 				}
-				console.log(user);
 				if (user.length > 0) {
-					console.log('Session Email: ' + user[0].email);
-					console.log('Session username: ' + user[0].username);
 					this.setState({
 						sessionEmail: user[0].email,
 						sessionUsername: user[0].username
@@ -93,7 +89,7 @@ export default class Facts extends React.Component {
 				// Map each genreObj in genreList to an HTML element:
 				// A button which triggers the showMovies function for each genre.
 				let bestCatDivs = bestCatList.map((bestCatObj, i) =>
-					<BestGenreRow key={i} genre={bestCatObj.genre} avg_rating={bestCatObj.avg_rating} />
+					<RatingRow key={i} genre={bestCatObj.genre} avg_rating={bestCatObj.avg_rating} />
 
 				);
 
@@ -313,7 +309,7 @@ export default class Facts extends React.Component {
 										<tbody>
 											<tr >
 												<td className="tRow">
-													<strong>Overall Average</strong>
+													<strong>Average Pre-2019</strong>
 												</td>
 												<td className="tRow">
 													{this.state.preCovidRating}

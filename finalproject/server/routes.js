@@ -18,7 +18,6 @@ function testGetCategories(req, res) {
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
-      console.log(rows);
       res.json(rows);
     }
   });
@@ -26,7 +25,6 @@ function testGetCategories(req, res) {
 
 function getCategoriesByCity(req, res) {
   var inputCity = req.params.city;
-  console.log(inputCity);
   var query = `
   SELECT Category, COUNT(*) as Count
   FROM Categories 
@@ -35,11 +33,11 @@ function getCategoriesByCity(req, res) {
   WHERE City = '${inputCity}'
   GROUP BY Category
   ORDER BY COUNT(*) DESC
-  LIMIT 10;`
+  LIMIT 10;
+  `
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
-      console.log(rows);
       res.json(rows);
     }
   });
@@ -55,8 +53,7 @@ function bestCategoriesPerCity(req, res) {
   GROUP BY genre
   ORDER BY avg_rating DESC
   LIMIT  10;
-
-`;
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -69,50 +66,45 @@ function bestCategoriesPerCity(req, res) {
 
 function tempTableCovidRating(req, res) {
   console.log("in temp table");
-  var query = `     
-  CREATE TEMPORARY TABLE citiesRating
-  SELECT city, Sum(CASE When ReviewsNoText.Date 
-    < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
-    Then ReviewsNoText.Stars Else 0 End) as preSum, 
-    Sum(CASE When ReviewsNoText.Date < STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
-    Then 1 Else 0 End) as preCount, 
-    Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
-    Then ReviewsNoText.Stars Else 0 End) as midSum, 
-    Sum(CASE When ReviewsNoText.Date >= STR_TO_DATE('20190101 0101','%Y%m%d %h%i') 
-    Then 1 Else 0 End) as midCount
-  FROM ReviewsNoText 
-  JOIN Businesses b ON b.ID = ReviewsNoText.BusinessID
-  GROUP BY city;
-`;
-
-  connection.query(query, function (err, rows, fields) {
+  var query1 = `  
+  DROP TABLE IF EXISTS citiesSum;
+  `;
+  connection.query(query1, function (err, rows, fields) {
     if (err) console.log(err);
     else {
-      console.log("done making temp table");
-      res.json(rows);
+      console.log("in temp table done with drop");
+      var query2 = `  
+      CREATE TABLE IF NOT EXISTS citiesSum ENGINE=MEMORY
+      SELECT city, Sum(CASE When ReviewsNoText.year < 2019 
+       Then ReviewsNoText.Stars Else 0 End) as preSum, 
+       Sum(CASE When ReviewsNoText.year < '2019' 
+       Then 1 Else 0 End) as preCount, 
+       Sum(CASE When ReviewsNoText.year >= '2019' 
+       Then ReviewsNoText.Stars Else 0 End) as midSum, 
+       Sum(CASE When ReviewsNoText.year >= '2019' 
+       Then 1 Else 0 End) as midCount 
+       FROM ReviewsNoText 
+       JOIN Businesses ON Businesses.ID = ReviewsNoText.BusinessID 
+       GROUP BY city;
+      `;
+      connection.query(query2, function (err, rows, fields) {
+        if (err) console.log(err);
+        else {
+          console.log("done making temp table");
+          res.json(rows);
+        }
+      });
     }
   });
 }
 
 function preCovidRating(req, res) {
   var city = req.params.selectedCity;
-//   var query = `
-//   WITH a AS (
-//     SELECT ID
-//     FROM Businesses
-//     WHERE City = '${city}')
-       
-//     SELECT AVG(ReviewsNoText.Stars) as output
-//       FROM ReviewsNoText
-//       JOIN a ON a.ID = ReviewsNoText.BusinessID;
-// `;
-
   var query = `
-  SELECT city, (citiesRating.preSum / citiesRating.preCount)as output
-  FROM citiesRating
-  WHERE citiesRating.city = '${city}';
+  SELECT city, (citiesSum.preSum / citiesSum.preCount) as output
+  FROM citiesSum
+  WHERE citiesSum.city = '${city}';
   `;
-
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
     else {
@@ -125,9 +117,9 @@ function preCovidRating(req, res) {
 function midCovidRating(req, res) {
   var city = req.params.selectedCity;
   var query = `
-  SELECT city, (citiesRating.midSum / citiesRating.midCount)as output
-  FROM citiesRating
-  WHERE citiesRating.city = '${city}';
+  SELECT city, (citiesSum.midSum / citiesSum.midCount)as output
+  FROM citiesSum
+  WHERE citiesSum.city = '${city}';
   `;
 
   connection.query(query, function (err, rows, fields) {
@@ -152,7 +144,7 @@ function percentOpen(req, res) {
     FROM CovidData 
     JOIN Businesses ON Businesses.ID = CovidData. BusinessID JOIN a 
     WHERE Businesses.City = '${city}' AND ClosedUntil = 0;
-`;
+    `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -169,7 +161,7 @@ function ToD(req, res) {
   FROM CovidData 
   JOIN Businesses ON Businesses.ID = CovidData.BusinessID
   WHERE CovidData.DelOrTo = 'TRUE' AND Businesses.City = '${city}';
-`;
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -185,9 +177,8 @@ function GrubHub(req, res) {
   SELECT COUNT(*) as output
   FROM CovidData 
   JOIN Businesses ON Businesses.ID = CovidData.BusinessID
-  WHERE Grubhub = 'TRUE' AND Businesses.City = '${city}'
-  ;
-`;
+  WHERE Grubhub = 'TRUE' AND Businesses.City = '${city}';
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -207,7 +198,7 @@ function getCities(req, res) {
   FROM b
   WHERE num > 500
   ORDER BY City
-`;
+  `;
 
   connection.query(query, function (err, rows, fields) {
     if (err) console.log(err);
@@ -218,7 +209,6 @@ function getCities(req, res) {
 }
 
 async function addNewUser(req, res) {
-  console.log('hello addNewUser');
   const password = req.body.password;
   const encryptedPassword = await bcrypt.hash(password, saltRounds)
   var user = {
@@ -231,10 +221,10 @@ async function addNewUser(req, res) {
   var query = `
   SELECT * 
   FROM USERS 
-  WHERE email = '${user.email.toLowerCase()}' OR username = '${user.username}';`
+  WHERE email = '${user.email.toLowerCase()}' OR username = '${user.username}';
+  `
   connection.query(query, async function (error, results, fields) {
     if (error) {
-      console.log("error in register ");
       res.send({
         "code": 400,
         "failed": "error ocurred"
@@ -247,8 +237,10 @@ async function addNewUser(req, res) {
         });
       }
       else {
-        var query = `INSERT INTO USERS(email, password, username) 
-        VALUES ('${user.email.toLowerCase()}', '${encryptedPassword}', '${user.username}');`
+        var query = `
+        INSERT INTO USERS(email, password, username) 
+        VALUES ('${user.email.toLowerCase()}', '${encryptedPassword}', '${user.username}');
+        `
         connection.query(query, function (error, rows, fields) {
           if (error) {
             res.send({
@@ -271,17 +263,18 @@ async function validateLogin(req, res) {
   var email = req.body.email;
   email = email.toLowerCase();
   var password = req.body.password;
-  var query = `SELECT * FROM USERS WHERE email = '${email}';`
+  var query = `
+  SELECT * FROM USERS WHERE email = '${email}';
+  `
   connection.query(query, async function (error, results, fields) {
     if (error) {
-      console.log("error in validate Login ");
       res.send({
         "code": 400,
         "failed": "error ocurred"
       })
     } else {
       if (results.length > 0) {
-        const comparision = await bcrypt.compare(req.body.password, results[0].password)
+        const comparision = await bcrypt.compare(password, results[0].password)
         if (comparision) {
           req.session.email = email;
           res.send({
@@ -358,7 +351,8 @@ function getRecs(req, res) {
 };
 
 function getCategories(req, res) {
-  var query = `SELECT DISTINCT Category AS category
+  var query = `
+  SELECT DISTINCT Category AS category
   FROM Categories
   ORDER BY Category
   `;
@@ -373,7 +367,8 @@ function getCategories(req, res) {
 
 function bookmarks(req, res) {
   var user = req.params.sessionEmail.toLowerCase();
-  var query = `SELECT Businesses.Name as name, Businesses.Address as address,
+  var query = `
+  SELECT Businesses.Name as name, Businesses.Address as address,
   Businesses.City as city, Businesses.State as state, Businesses.Stars as stars,
   Businesses.ID as ID 
   FROM Businesses 
@@ -393,8 +388,10 @@ function addBookmark(req, res) {
   var email = req.body.userEmail.toLowerCase();
   var businessID = req.body.businessID;
   console.log("in addBookmark email " + email + " " + businessID);
-  var query = `INSERT INTO Bookmarks(UserEmail, BusinessID) 
-        VALUES ('${email}', '${businessID}');`
+  var query = `
+      INSERT INTO Bookmarks(UserEmail, BusinessID) 
+      VALUES ('${email}', '${businessID}');
+    `
   connection.query(query, function (error, rows, fields) {
     if (error) {
       res.send({
@@ -434,7 +431,8 @@ function removeBookmark(req, res) {
 
 function getAreaAverage(req, res) {
   var inputPC = req.params.postalCode;
-  var query = `SELECT AVG(Stars) as avg_area_rating
+  var query = `
+  SELECT AVG(Stars) as avg_area_rating
   FROM Businesses
   WHERE Businesses.PostalCode = ${inputPC}
   GROUP BY Businesses.PostalCode
@@ -472,7 +470,8 @@ function getSessionUser(req, res) {
       "failed": "not authenticated"
     })
   } else {
-    var query = `SELECT email, username 
+    var query = `
+    SELECT email, username 
     FROM USERS 
     WHERE email = '${req.session.email.toLowerCase()}'
     `
@@ -490,9 +489,17 @@ function getSessionUser(req, res) {
 };
 
 function logout(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   req.session.email = '';
-  // res.redirect('http://localhost:3000/');
+  var query1 = `  
+  DROP TABLE IF EXISTS citiesSum;
+  `;
+  connection.query(query1, function (err, rows, fields) {
+    if (err) console.log(err);
+    else {
+      console.log("done logging out");
+      res.json(rows);
+    }
+  });
 };
 
 function covidBannerCity(req, res) {
@@ -511,6 +518,8 @@ function covidBannerCity(req, res) {
     }
   });
 };
+
+
 
 // The exported functions, which can be accessed in index.js.
 module.exports = {

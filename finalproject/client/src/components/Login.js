@@ -52,17 +52,12 @@ export default class Login extends React.Component {
             .then(res => res.json())
             .then((code) => {
                 var msg = JSON.parse(JSON.stringify(code)).status;
-                // console.log("res json code " + JSON.stringify(code));
-                // console.log("res json status " + msg);
                 if (msg === 200) {
                     console.log("SUCCESSS")
                     window.location.assign('/home');
-                    //redirect from here; 
                 } else if (msg === 206) {
-                    // console.log("Email does not exist")
                     this.setState({ submission_errors: 'Email does not exist' })
                 } else if (msg === 204) {
-                    // console.log("Email and password does not match")
                     this.setState({ submission_errors: 'Email and password does not match' })
                 }
             })

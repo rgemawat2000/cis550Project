@@ -38,13 +38,9 @@ export default class Bookmark extends React.Component {
 			.then(res => res.json())
 			.then(user => {
 				if (JSON.parse(JSON.stringify(user)).status === 404) {
-					console.log("hello not valid in bookmark");
 					window.location.assign("http://localhost:3000/");
 				}
-				console.log(user);
 				if (user.length > 0) {
-					console.log('Session Email: ' + user[0].email);
-					console.log('Session username: ' + user[0].username);
 					this.setState({
 						sessionEmail: user[0].email,
 						sessionUsername: user[0].username
@@ -80,7 +76,6 @@ export default class Bookmark extends React.Component {
 			"userEmail": this.state.sessionEmail,
 			"businessID": businessID,
 		}
-		console.log('in removeBookmark' + reqBody);
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -92,7 +87,7 @@ export default class Bookmark extends React.Component {
 			.then((code) => {
 				var msg = JSON.parse(JSON.stringify(code)).status;
 				if (msg === 200) {
-					console.log("removed bookmark");
+					// console.log("removed bookmark");
 					var newBookmarks = this.state.bookmarks.filter(item => {
 						return item.ID !== businessID
 					}); 

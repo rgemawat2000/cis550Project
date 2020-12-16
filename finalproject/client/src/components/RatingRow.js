@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default class BestGenreRow extends React.Component {
+export default class RatingRow extends React.Component {
 
 	render() {
 		return (

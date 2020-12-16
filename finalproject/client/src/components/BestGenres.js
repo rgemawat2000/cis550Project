@@ -1,6 +1,6 @@
 import React from 'react';
 import PageNavbar from './PageNavbar';
-import BestGenreRow from './BestGenreRow';
+import RatingRow from './RatingRow';
 import '../style/BestGenres.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
